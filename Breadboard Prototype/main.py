@@ -11,7 +11,7 @@ import time
 
 # green LED on Pico
 onboard_LED = Pin("LED", Pin.OUT)
-onboard_LED.toggle()
+onboard_LED.on()
 
 # IMU I2C SETUP
 i2c_hand = I2C(0, sda=Pin(16), scl=Pin(17), freq=400000) # define i2c pins
@@ -20,11 +20,13 @@ i2c_arm = I2C(1, sda=Pin(18), scl=Pin(19), freq=400000)
 arm_imu = MPU9250(i2c_arm)               # define the address of the arm imu
 hand_imu = MPU9250(i2c_hand)             # define the address of the hand imu
 
+# these values need to be written to flash
 arm_offset, arm_scale = arm_imu.ak8963.calibrate(count=5)
 hand_offset, hand_scale = hand_imu.ak8963.calibrate(count=5)
 
+magnetic_declination = -3.483   # value is only for valparaiso indiana
+
 rgb_led(0, 0, 0)
-onboard_LED.toggle()
 
 # Define UUIDs for the service and characteristic
 _SERVICE_UUID = bluetooth.UUID(0x1848)
