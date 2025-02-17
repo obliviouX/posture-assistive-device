@@ -11,10 +11,10 @@ display = PicoGraphics(DISPLAY_PICO_DISPLAY_2, pen_type=PEN_RGB332, rotate=0)
 # set up constants for drawing
 WIDTH, HEIGHT = display.get_bounds()
 
-#button_a = Pin(12, Pin.IN, Pin.PULL_UP)
-#button_b = Pin(13, Pin.IN, Pin.PULL_UP)
-#button_x = Pin(14, Pin.IN, Pin.PULL_UP)
-#button_y = Pin(15, Pin.IN, Pin.PULL_UP)
+#button_a = Pin(12, Pin.IN)
+#button_b = Pin(13, Pin.IN)
+button_x = Pin(14, Pin.IN)
+#button_y = Pin(15, Pin.IN)
 
 BLACK = display.create_pen(0, 0, 0)
 WHITE = display.create_pen(255,255,255)
@@ -32,6 +32,8 @@ lw_r = 1000    # so a dash can be displayed
 rw_fe = 1000
 rw_r = 1000
 neck_fe = 1000
+
+selected_menu = 0
 
 def show_connected_device(device):
     
@@ -106,6 +108,7 @@ def update_neck(fe):
     
 
 def create_display_layout():
+    global selected_menu
     display.set_pen(BLACK)
     display.clear()
     display.set_pen(WHITE)  # White
@@ -118,44 +121,47 @@ def create_display_layout():
     
     #display.text(text, x, y, wordwrap, scale, angle, spacing)
     
-    # Menu 1
-    #############################
-    #... LW      RW      B      #
-    #                           #
-    # FE                        #
-    #                           #
-    # R                         #
-    #                           #
-    #############################
+    if button_x.value() == 0:
+        selected_menu = selected_menu + 1
+        
+    if selected_menu > 4:   # roll over value
+        selected_menu = 0
     
-    # Menu 2
-    #############################
-    #...     LW        RW       #
-    #                           #
-    # FE                        #
-    #                           #
-    # R                         #
-    #                           #
-    #############################
+    # Menu 1                            # Menu 2                            # Menu 3                            # Menu 4
+    #############################       #############################       #############################       #############################
+    #... LW      RW      B      #       #...     LW        RW       #       #...          B             #       #...          LW            #
+    #                           #       #                           #       #                           #       #                           #
+    # FE                        #       # FE                        #       #                           #       # FE                        #
+    #                           #       #                           #       # FE                        #       #                           #
+    # R                         #       # R                         #       #                           #       # R                         #
+    #                           #       #                           #       #                           #       #                           #
+    #############################       #############################       #############################       #############################
     
-    # Menu 3
-    #############################
-    #...          B             #
-    #                           #
-    #                           #
-    # FE                        #
-    #                           #
-    #                           #
-    #############################
-    
-    display.text("LW", ((WIDTH//4) - 20), 25, 100, 1, 0)
-    display.text("RW", (WIDTH//2), 25, 100, 1, 0)
-    display.text("B", (((WIDTH//4) * 3) + 20), 25, 100, 1, 0)
+    if selected_menu == 0:
+        display.text("LW", ((WIDTH//4) - 20), 25, 100, 1, 0)
+        display.text("RW", (WIDTH//2), 25, 100, 1, 0)
+        display.text("B", (((WIDTH//4) * 3) + 20), 25, 100, 1, 0)
 
-    text_width_fe = display.measure_text("F/E", 1, 0, 0)
-    text_width_r = display.measure_text("R", 1, 0, 0)
-    display.text("FE", 10, (HEIGHT//4), 100, 1, 0)
-    display.text("R", 10, ((HEIGHT//4) * 3), 100, 1, 0)
+        text_width_fe = display.measure_text("F/E", 1, 0, 0)
+        text_width_r = display.measure_text("R", 1, 0, 0)
+        display.text("FE", 10, (HEIGHT//4), 100, 1, 0)
+        display.text("R", 10, ((HEIGHT//4) * 3), 100, 1, 0)
+
+    elif selected_menu == 1:
+        
+        
+    elif selected_menu == 2:
+        
+        
+    elif selected_menu == 3:
+        
+        
+    elif selected_menu == 4:
+        
+        
+    else:
+        selected_menu = 0
+
 
 
 def update_display(fe, rad, device):  #flexion extension, radial, device
