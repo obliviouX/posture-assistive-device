@@ -135,10 +135,10 @@ def create_display_layout(fe, rad, device):
     # function parameters: display.text(text, x, y, wordwrap, scale, angle, spacing)
     
     # 5 Menus Total
-    # button a = LW, RW, B
-    # button b = LW, RW, and LW RW individual scroll
-    # button x = B
-    # button y = green or red screen when any posture is broken
+    # button a = Menu 0 LW, RW, B
+    # button b = Menu 1 LW, RW, and LW RW individual sub menus
+    # button x = Menu 2 B
+    # button y = Menu 3 green or red screen when any posture is broken
 
     # Menu 0 (a)                        # Menu 1 (b)                        # Menu 2 (x)                        # Sub menu 3 (y) (also for RW)
     #############################       #############################       #############################       #############################
@@ -157,7 +157,6 @@ def create_display_layout(fe, rad, device):
 
         display.text("FE", 10, (HEIGHT//4), 100, 1, 0)
         display.text("R", 10, ((HEIGHT//4) * 3), 100, 1, 0)
-
 
 
     if button_b.value() == 0:
