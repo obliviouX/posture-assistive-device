@@ -11,10 +11,10 @@ display = PicoGraphics(DISPLAY_PICO_DISPLAY_2, pen_type=PEN_RGB332, rotate=0)
 # set up constants for drawing
 WIDTH, HEIGHT = display.get_bounds()
 
-#button_a = Pin(12, Pin.IN)
-#button_b = Pin(13, Pin.IN)
+button_a = Pin(12, Pin.IN)
+button_b = Pin(13, Pin.IN)
 button_x = Pin(14, Pin.IN)
-#button_y = Pin(15, Pin.IN)
+button_y = Pin(15, Pin.IN)
 
 BLACK = display.create_pen(0, 0, 0)
 WHITE = display.create_pen(255,255,255)
@@ -33,10 +33,10 @@ rw_fe = 1000
 rw_r = 1000
 neck_fe = 1000
 
-selected_menu = 0
+selected_menu = 0       # default menu which shows LW, RW, and B
+selected_sub_menu = 0   # default sub menu for the 'b' button
 
 def show_connected_device(device):
-    
     if device == "1":
         display.set_pen(BLUE)
         display.circle(10, 10, 3)
@@ -51,81 +51,88 @@ def show_connected_device(device):
         display.circle(10,10,3)
     
     
-def update_left_wrist(fe, rad):
-    
+def update_left_wrist(fe, rad, selected_menu):
     global lw_fe, lw_r
     lw_fe = fe
     lw_r = rad
     
-    if (int(lw_fe) > 35) or (int(lw_fe) < -35):
-        display.set_pen(RED)
-    else:
-        display.set_pen(GREEN)
-        
-    display.text(str(lw_fe), (WIDTH//4), (HEIGHT//4), 100, 1, 0)
-        
-    if (int(lw_r) > 35) or (int(lw_r) < -35):
-        display.set_pen(RED)
-    else:
-        display.set_pen(GREEN)
+    if selected_menu == 0:
+        if (int(lw_fe) > 35) or (int(lw_fe) < -35):
+            display.set_pen(RED)
+        else:
+            display.set_pen(GREEN)
+            
+        display.text(str(lw_fe), (WIDTH//4), (HEIGHT//4), 100, 1, 0)
+            
+        if (int(lw_r) > 35) or (int(lw_r) < -35):
+            display.set_pen(RED)
+        else:
+            display.set_pen(GREEN)
 
-    display.text(str(lw_r), (WIDTH//4), ((HEIGHT//4) * 3), 100, 1, 0)
-        
-
-def update_right_wrist(fe, rad):
+        display.text(str(lw_r), (WIDTH//4), ((HEIGHT//4) * 3), 100, 1, 0)
     
+    elif selected_menu == 1:
+
+    elif selected_menu == 3:
+
+    else: # display nothing
+
+
+def update_right_wrist(fe, rad, selected_menu):
     global rw_fe, rw_r
     rw_fe = fe
     rw_r = rad
     
-    if (int(rw_fe) > 35) or (int(rw_fe) < -35):
-        display.set_pen(RED)
-    else:
-        display.set_pen(GREEN)
-        
-    display.text(str(rw_fe), (WIDTH//2), (HEIGHT//4), 100, 1, 0)
-        
-    if (int(rw_r) > 35) or (int(rw_r) < -35):
-        display.set_pen(RED)
-    else:
-        display.set_pen(GREEN)
-        
-    display.text(str(rw_r), (WIDTH//2), ((HEIGHT//4) * 3), 100, 1, 0)
+    if selected_menu == 0:
+        if (int(rw_fe) > 35) or (int(rw_fe) < -35):
+            display.set_pen(RED)
+        else:
+            display.set_pen(GREEN)
+            
+        display.text(str(rw_fe), (WIDTH//2), (HEIGHT//4), 100, 1, 0)
+            
+        if (int(rw_r) > 35) or (int(rw_r) < -35):
+            display.set_pen(RED)
+        else:
+            display.set_pen(GREEN)
+            
+        display.text(str(rw_r), (WIDTH//2), ((HEIGHT//4) * 3), 100, 1, 0)
 
-
-def update_neck(fe):
+    elif selected_menu == 1:
     
+    elif selected_menu == 3:
+    
+    else: # display nothing
+
+
+def update_neck(fe, selected_menu):
     global neck_fe
     neck_fe = fe
     
-    if (int(neck_fe) > 35) or (int(neck_fe) < -35):
-        display.set_pen(RED)
-    else:
-        display.set_pen(GREEN)
-        
-    text_width_neck_fe = display.measure_text(str(neck_fe), 1, 0, 0)
-    display.text(str(neck_fe), (WIDTH//4) + (text_width_neck_fe), (HEIGHT//4), 100, 1, 0)
-    
+    if selected_menu == 0:
+        if (int(neck_fe) > 35) or (int(neck_fe) < -35):
+            display.set_pen(RED)
+        else:
+            display.set_pen(GREEN)
+            
+        text_width_neck_fe = display.measure_text(str(neck_fe), 1, 0, 0)
+        display.text(str(neck_fe), (WIDTH//4) + (text_width_neck_fe), (HEIGHT//4), 100, 1, 0)
 
-def create_display_layout():
-    global selected_menu
+    elif selected_menu == 2:
+
+    else: # display nothing
+
+
+def create_display_layout(fe, rad, device):
+    global selected_sub_menu
+
     display.set_pen(BLACK)
     display.clear()
-    display.set_pen(WHITE)  # White
+    display.set_pen(WHITE)
     display.set_thickness(3)
     display.set_font("sans")
-
-    #text_width_lw = display.measure_text("LW", 4, 0, 0)
-    #text_width_rw = display.measure_text("RW", 4, 0, 0)
-    #text_width_b = display.measure_text("B", 4, 0, 0)
     
-    #display.text(text, x, y, wordwrap, scale, angle, spacing)
-    
-    if button_x.value() == 0:
-        selected_menu = selected_menu + 1
-        
-    if selected_menu > 4:   # roll over value
-        selected_menu = 0
+    # function parameters: display.text(text, x, y, wordwrap, scale, angle, spacing)
     
     # 5 Menus Total
     # button a = LW, RW, B
@@ -133,7 +140,7 @@ def create_display_layout():
     # button x = B
     # button y = green or red screen when any posture is broken
 
-    # Menu 0                            # Menu 1                            # Menu 2                            # Menu 3 (also for RW Menu 4)
+    # Menu 0 (a)                        # Menu 1 (b)                        # Menu 2 (x)                        # Sub menu 3 (y) (also for RW)
     #############################       #############################       #############################       #############################
     #... LW      RW      B      #       #...     LW        RW       #       #...          B             #       #...          LW            #
     #                           #       #                           #       #                           #       #                           #
@@ -142,37 +149,34 @@ def create_display_layout():
     # R                         #       # R                         #       #                           #       # R                         #
     #                           #       #                           #       #                           #       #                           #
     #############################       #############################       #############################       #############################
-    
-    if selected_menu == 0:
+
+    if button_a.value() == 0:
         display.text("LW", ((WIDTH//4) - 20), 25, 100, 1, 0)
         display.text("RW", (WIDTH//2), 25, 100, 1, 0)
         display.text("B", (((WIDTH//4) * 3) + 20), 25, 100, 1, 0)
 
-        text_width_fe = display.measure_text("F/E", 1, 0, 0)
-        text_width_r = display.measure_text("R", 1, 0, 0)
         display.text("FE", 10, (HEIGHT//4), 100, 1, 0)
         display.text("R", 10, ((HEIGHT//4) * 3), 100, 1, 0)
 
-    elif selected_menu == 1:
 
-        
-    elif selected_menu == 2:
-        
-        
-    elif selected_menu == 3:
-        
-        
-    elif selected_menu == 4:
-        
-        
-    else:
-        selected_menu = 0
 
+    if button_b.value() == 0:
+        selected_sub_menu = selected_sub_menu + 1
+        if selected_sub_menu > 2:   # rollover check
+            selected_sub_menu = 0
+
+    if button_x.value() == 0:
+
+
+    if button_y.value() == 0:
+        display.set_pen()
+
+    show_connected_device(device)
 
 
 def update_display(fe, rad, device):  #flexion extension, radial, device
 
-    create_display_layout()
+    create_display_layout(fe, rad, device)
     
     if device == "1":
         update_left_wrist(fe, rad)
@@ -180,13 +184,10 @@ def update_display(fe, rad, device):  #flexion extension, radial, device
         update_right_wrist(fe, rad)
     elif device == "3":
         update_neck(fe)
-
-    show_connected_device(device)
     
     display.update()
     #time.sleep(1.0 / 60)
 
-#update_display(20,30)
         
 def display_startup():
     display.set_pen(BLACK)
