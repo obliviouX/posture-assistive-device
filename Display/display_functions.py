@@ -127,7 +127,13 @@ def create_display_layout():
     if selected_menu > 4:   # roll over value
         selected_menu = 0
     
-    # Menu 1                            # Menu 2                            # Menu 3                            # Menu 4
+    # 5 Menus Total
+    # button a = LW, RW, B
+    # button b = LW, RW, and LW RW individual scroll
+    # button x = B
+    # button y = green or red screen when any posture is broken
+
+    # Menu 0                            # Menu 1                            # Menu 2                            # Menu 3 (also for RW Menu 4)
     #############################       #############################       #############################       #############################
     #... LW      RW      B      #       #...     LW        RW       #       #...          B             #       #...          LW            #
     #                           #       #                           #       #                           #       #                           #
@@ -148,7 +154,7 @@ def create_display_layout():
         display.text("R", 10, ((HEIGHT//4) * 3), 100, 1, 0)
 
     elif selected_menu == 1:
-        
+
         
     elif selected_menu == 2:
         
