@@ -33,7 +33,7 @@ rw_fe = 1000
 rw_r = 1000
 neck_fe = 1000
 
-selected_menu = 0       # default menu which shows LW, RW, and B
+selected_menu = 0
 selected_sub_menu = 0   # default sub menu for the 'b' button
 
 def show_connected_device(device):
@@ -51,11 +51,9 @@ def show_connected_device(device):
         display.circle(10,10,3)
     
     
-def update_left_wrist(fe, rad, selected_menu):
-    global lw_fe, lw_r
-    lw_fe = fe
-    lw_r = rad
-    
+def update_left_wrist():
+    global lw_fe, lw_r, selected_menu, selected_sub_menu
+
     if selected_menu == 0:
         if (int(lw_fe) > 35) or (int(lw_fe) < -35):
             display.set_pen(RED)
@@ -78,10 +76,8 @@ def update_left_wrist(fe, rad, selected_menu):
     else: # display nothing
 
 
-def update_right_wrist(fe, rad, selected_menu):
-    global rw_fe, rw_r
-    rw_fe = fe
-    rw_r = rad
+def update_right_wrist():
+    global rw_fe, rw_r, selected_menu, selected_sub_menu
     
     if selected_menu == 0:
         if (int(rw_fe) > 35) or (int(rw_fe) < -35):
@@ -105,9 +101,8 @@ def update_right_wrist(fe, rad, selected_menu):
     else: # display nothing
 
 
-def update_neck(fe, selected_menu):
-    global neck_fe
-    neck_fe = fe
+def update_neck():
+    global neck_fe, selected_menu
     
     if selected_menu == 0:
         if (int(neck_fe) > 35) or (int(neck_fe) < -35):
@@ -119,38 +114,44 @@ def update_neck(fe, selected_menu):
         display.text(str(neck_fe), (WIDTH//4) + (text_width_neck_fe), (HEIGHT//4), 100, 1, 0)
 
     elif selected_menu == 2:
+        if (int(neck_fe) > 35) or (int(neck_fe) < -35):
+            display.set_pen(RED)
+        else:
+            display.set_pen(GREEN)
+
+        text_width_neck_fe = display.measure_text(str(neck_fe), 1, 0, 0)
+        display.text(str(neck_fe), (WIDTH//2) + (text_width_neck_fe), (HEIGHT//2), 100, 1, 0)
 
     else: # display nothing
 
 
-def create_display_layout(fe, rad, device):
-    global selected_sub_menu
+# 5 Menus Total
+# button a = Menu 0 LW, RW, B
+# button b = Menu 1 LW, RW, and LW RW individual sub menus
+# button x = Menu 2 B
+# button y = Menu 3 green or red screen when any posture is broken
+
+# Menu 0 (a)                        # Menu 1 (b)                        # Menu 2 (x)                        # Sub menu 3 (y) (also for RW)
+#############################       #############################       #############################       #############################
+#... LW      RW      B      #       #...     LW        RW       #       #...          B             #       #...          LW            #
+#                           #       #                           #       #                           #       #                           #
+# FE                        #       # FE                        #       #                           #       # FE                        #
+#                           #       #                           #       # FE                        #       #                           #
+# R                         #       # R                         #       #                           #       # R                         #
+#                           #       #                           #       #                           #       #                           #
+#############################       #############################       #############################       #############################
+def create_display_layout(device):
+    global lw_fe, lw_r, rw_fe, rw_r, neck_fe, selected_menu, selected_sub_menu
 
     display.set_pen(BLACK)
     display.clear()
     display.set_pen(WHITE)
     display.set_thickness(3)
     display.set_font("sans")
-    
-    # function parameters: display.text(text, x, y, wordwrap, scale, angle, spacing)
-    
-    # 5 Menus Total
-    # button a = Menu 0 LW, RW, B
-    # button b = Menu 1 LW, RW, and LW RW individual sub menus
-    # button x = Menu 2 B
-    # button y = Menu 3 green or red screen when any posture is broken
 
-    # Menu 0 (a)                        # Menu 1 (b)                        # Menu 2 (x)                        # Sub menu 3 (y) (also for RW)
-    #############################       #############################       #############################       #############################
-    #... LW      RW      B      #       #...     LW        RW       #       #...          B             #       #...          LW            #
-    #                           #       #                           #       #                           #       #                           #
-    # FE                        #       # FE                        #       #                           #       # FE                        #
-    #                           #       #                           #       # FE                        #       #                           #
-    # R                         #       # R                         #       #                           #       # R                         #
-    #                           #       #                           #       #                           #       #                           #
-    #############################       #############################       #############################       #############################
-
-    if button_a.value() == 0:
+    # MENU 0
+    if (button_a.value() == 0) or (selected_menu == 0):
+        selected_menu = 0
         display.text("LW", ((WIDTH//4) - 20), 25, 100, 1, 0)
         display.text("RW", (WIDTH//2), 25, 100, 1, 0)
         display.text("B", (((WIDTH//4) * 3) + 20), 25, 100, 1, 0)
@@ -158,32 +159,61 @@ def create_display_layout(fe, rad, device):
         display.text("FE", 10, (HEIGHT//4), 100, 1, 0)
         display.text("R", 10, ((HEIGHT//4) * 3), 100, 1, 0)
 
+        update_left_wrist()  # draw the numbers to the screen
+        update_right_wrist()
+        update_neck()
 
+    # MENU 1
     if button_b.value() == 0:
+        selected_menu = 1
         selected_sub_menu = selected_sub_menu + 1
+
         if selected_sub_menu > 2:   # rollover check
             selected_sub_menu = 0
 
+        if selected_sub_menu == 0:
+            display.text("LW", (WIDTH//3), 25, 100, 1, 0)
+            display.text("RW", ((WIDTH//3) * 2), 25, 100, 1, 0)
+            update_left_wrist()
+            update_right_wrist()
+
+        elif selected_sub_menu == 1:
+            display.text("LW", (WIDTH//2), 25, 100, 1, 0)
+            update_left_wrist()
+        
+        elif selected_sub_menu == 2:
+            display.text("RW", (WIDTH//2), 25, 100, 1, 0)
+            update_right_wrist()
+        
+        else:
+            display.text("sub menu error", (WIDTH//2), 25 100, 1, 0)
+
+    # MENU 2
     if button_x.value() == 0:
+        selected_menu = 2
+        update_neck()
 
-
+    # MENU 3
     if button_y.value() == 0:
-        display.set_pen()
+        selected_menu = 3
 
     show_connected_device(device)
 
 
 def update_display(fe, rad, device):  #flexion extension, radial, device
+    global lw_fe, lw_r, rw_fe, rw_r, neck_fe
 
-    create_display_layout(fe, rad, device)
-    
-    if device == "1":
-        update_left_wrist(fe, rad)
+    if device == "1":   # update the global variables
+        lw_fe = fe
+        lw_r = rad
     elif device == "2":
-        update_right_wrist(fe, rad)
+        rw_fe = fe
+        rw_r = rad
     elif device == "3":
-        update_neck(fe)
-    
+        neck_fe = fe
+
+    create_display_layout(device)
+
     display.update()
     #time.sleep(1.0 / 60)
 
