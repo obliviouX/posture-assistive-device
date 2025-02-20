@@ -18,24 +18,32 @@ button_x = Pin(14, Pin.IN, Pin.PULL_UP)
 button_y = Pin(15, Pin.IN, Pin.PULL_UP)
 
 # interrupts for each button
-def callback(button_a):
+def callback_a(button_a):
+    global selected_menu
+    print("button a pressed")
     selected_menu = 0
-pin.irq(trigger=button_a.IRQ_RISING, handler=callback)
+button_a.irq(trigger=button_a.IRQ_RISING, handler=callback_a)
 
-def callback(button_b):
+def callback_b(button_b):
+    global selected_menu, selected_sub_menu
+    print("button b pressed")
     selected_menu = 1
     selected_sub_menu += 1
     if selected_sub_menu > 2:
         selected_sub_menu = 0
-pin.irq(trigger=button_b.IRQ_RISING, handler=callback)
+button_b.irq(trigger=button_b.IRQ_RISING, handler=callback_b)
 
-def callback(button_x):
+def callback_x(button_x):
+    global selected_menu
+    print("button x pressed")
     selected_menu = 2
-pin.irq(trigger=button_x.IRQ_RISING, handler=callback)
+button_x.irq(trigger=button_x.IRQ_RISING, handler=callback_x)
 
-def callback(button_y):
+def callback_y(button_y):
+    global selected_menu
+    print("button y pressed")
     selected_menu = 3
-pin.irq(trigger=button_y.IRQ_RISING, handler=callback)
+button_y.irq(trigger=button_y.IRQ_RISING, handler=callback_y)
 
 
 BLACK = display.create_pen(0, 0, 0)
