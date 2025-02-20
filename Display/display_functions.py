@@ -28,11 +28,11 @@ YELLOW = display.create_pen(255,255,0)
 
 # global variables so they can stay on the screen
 # instead of removed when display is updated
-lw_fe = '-'   # if any of these is -, it means it is not connected
-lw_r = '-'    # so a dash can be displayed
-rw_fe = '-'
-rw_r = '-'
-neck_fe = '-'
+lw_fe = '999'   # if any of these is 999, it means it is not connected
+lw_r = '999'    # so a dash can be displayed
+rw_fe = '999'
+rw_r = '999'
+neck_fe = '999'
 
 selected_menu = 0
 selected_sub_menu = 0   # default sub menu for the 'b' button
