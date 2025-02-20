@@ -110,9 +110,9 @@ def create_display_layout():
         text_width = (display.measure_text("LW", 1))//2
         display.text("LW", ((WIDTH//4) - text_width), 25, 100, 1, 0)
         text_width = (display.measure_text("RW", 1))//2
-        display.text("RW", (WIDTH//2) - text_width, 25, 100, 1, 0)
+        display.text("RW", ((WIDTH//5) * 3) - text_width, 25, 100, 1, 0)
         text_width = (display.measure_text("B", 1))//2
-        display.text("B", ((WIDTH//4) * 3) - text_width, 25, 100, 1, 0)
+        display.text("B", ((WIDTH//6) * 5) - text_width, 25, 100, 1, 0)
 
         display.text("FE", 3, (HEIGHT//4), 100, 1, 0)
         display.text("R", 3, ((HEIGHT//4) * 3), 100, 1, 0)
@@ -141,7 +141,7 @@ def create_display_layout():
             display.set_pen(GREEN)
         
         text_width = (display.measure_text(str(rw_fe), 1))//2
-        display.text(str(rw_fe), (WIDTH//2) - text_width, (HEIGHT//4), 100, 1, 0)
+        display.text(str(rw_fe), ((WIDTH//5) * 3) - text_width, (HEIGHT//4), 100, 1, 0)
                 
         if (int(rw_r) > 35) or (int(rw_r) < -35):
             display.set_pen(RED)
@@ -149,7 +149,7 @@ def create_display_layout():
             display.set_pen(GREEN)
                 
         text_width = (display.measure_text(str(rw_r), 1))//2
-        display.text(str(rw_r), (WIDTH//2) - text_width, ((HEIGHT//4) * 3), 100, 1, 0)
+        display.text(str(rw_r), ((WIDTH//5) * 3) - text_width, ((HEIGHT//4) * 3), 100, 1, 0)
 
         # back/neck values
         if (int(neck_fe) > 35) or (int(neck_fe) < -35):
@@ -158,7 +158,7 @@ def create_display_layout():
             display.set_pen(GREEN)
 
         text_width = (display.measure_text(str(neck_fe), 1))//2
-        display.text(str(neck_fe), (((WIDTH//4) * 3) - text_width), (HEIGHT//4), 100, 1, 0)
+        display.text(str(neck_fe), (((WIDTH//6) * 5) - text_width), (HEIGHT//4), 100, 1, 0)
 
 
     # MENU 1
