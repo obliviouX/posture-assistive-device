@@ -17,6 +17,27 @@ button_b = Pin(13, Pin.IN, Pin.PULL_UP)
 button_x = Pin(14, Pin.IN, Pin.PULL_UP)
 button_y = Pin(15, Pin.IN, Pin.PULL_UP)
 
+# interrupts for each button
+def callback(button_a):
+    selected_menu = 0
+pin.irq(trigger=button_a.IRQ_RISING, handler=callback)
+
+def callback(button_b):
+    selected_menu = 1
+    selected_sub_menu += 1
+    if selected_sub_menu > 2:
+        selected_sub_menu = 0
+pin.irq(trigger=button_b.IRQ_RISING, handler=callback)
+
+def callback(button_x):
+    selected_menu = 2
+pin.irq(trigger=button_x.IRQ_RISING, handler=callback)
+
+def callback(button_y):
+    selected_menu = 3
+pin.irq(trigger=button_y.IRQ_RISING, handler=callback)
+
+
 BLACK = display.create_pen(0, 0, 0)
 WHITE = display.create_pen(255,255,255)
 RED = display.create_pen(255,0,0)
