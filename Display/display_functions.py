@@ -103,9 +103,44 @@ def create_display_layout():
         display.text("FE", 10, (HEIGHT//4), 100, 1, 0)
         display.text("R", 10, ((HEIGHT//4) * 3), 100, 1, 0)
 
-        update_left_wrist()  # draw the numbers to the screen
-        update_right_wrist()
-        update_neck()
+        # left wrist values
+        if (int(lw_fe) > 35) or (int(lw_fe) < -35):
+            display.set_pen(RED)
+        else:
+            display.set_pen(GREEN)
+        
+        display.text(str(lw_fe), ((WIDTH//4) - 20), (HEIGHT//4), 100, 1, 0)
+            
+        if (int(lw_r) > 35) or (int(lw_r) < -35):
+            display.set_pen(RED)
+        else:
+            display.set_pen(GREEN)
+
+        display.text(str(lw_r), ((WIDTH//4) - 20), ((HEIGHT//4) * 3), 100, 1, 0)
+
+        # right wrist values
+        if (int(rw_fe) > 35) or (int(rw_fe) < -35):
+            display.set_pen(RED)
+        else:
+            display.set_pen(GREEN)
+                
+        display.text(str(rw_fe), (WIDTH//2), (HEIGHT//4), 100, 1, 0)
+                
+        if (int(rw_r) > 35) or (int(rw_r) < -35):
+            display.set_pen(RED)
+        else:
+            display.set_pen(GREEN)
+                
+        display.text(str(rw_r), (WIDTH//2), ((HEIGHT//4) * 3), 100, 1, 0)
+
+        # back/neck values
+        if (int(neck_fe) > 35) or (int(neck_fe) < -35):
+            display.set_pen(RED)
+        else:
+            display.set_pen(GREEN)
+
+        display.text(str(neck_fe), (((WIDTH//4) * 3) + 20), (HEIGHT//4), 100, 1, 0)
+
 
     # MENU 1
     if selected_menu == 1:
