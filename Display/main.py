@@ -119,9 +119,9 @@ async def main():
     display_startup()
     display.update()
     while True:
-        user_input()
         tasks = [
             asyncio.create_task(run_central_mode()),
+            asyncio.create_task(user_input()),
         ]
         await asyncio.gather(*tasks)
 
