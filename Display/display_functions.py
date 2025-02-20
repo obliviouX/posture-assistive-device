@@ -194,7 +194,8 @@ def create_display_layout():
 
 
         elif selected_sub_menu == 1:
-            display.text("Left Wrist", (WIDTH//2), 25, 100, 1, 0)
+            text_width = (display.measure_text("Left Wrist", 1))//2
+            display.text("Left Wrist", (WIDTH//2) - text_width, 25, 100, 1, 0)
             display.text("FE", 10, (HEIGHT//4), 100, 1, 0)
             display.text("R", 10, ((HEIGHT//4) * 3), 100, 1, 0)
 
@@ -203,6 +204,7 @@ def create_display_layout():
             else:
                 display.set_pen(GREEN)
             
+            text_width = (display.measure_text(str(lw_fe), 1))//2
             display.text(str(lw_fe), (WIDTH//2), (HEIGHT//4), 100, 1, 0)
             
             if (int(lw_r) > 35) or (int(lw_r) < -35):
@@ -210,10 +212,12 @@ def create_display_layout():
             else:
                 display.set_pen(GREEN)
 
+            text_width = (display.measure_text(str(lw_r), 1))//2
             display.text(str(lw_r), (WIDTH//2), ((HEIGHT//4) * 3), 100, 1, 0)
         
         elif selected_sub_menu == 2:
-            display.text("Right Wrist", (WIDTH//2), 25, 100, 1, 0)
+            text_width = (display.measure_text("Right Wrist", 1))//2
+            display.text("Right Wrist", (WIDTH//2) - text_width, 25, 100, 1, 0)
             display.text("FE", 10, (HEIGHT//4), 100, 1, 0)
             display.text("R", 10, ((HEIGHT//4) * 3), 100, 1, 0)
 
@@ -221,44 +225,48 @@ def create_display_layout():
                 display.set_pen(RED)
             else:
                 display.set_pen(GREEN)
-                
-            display.text(str(rw_fe), (WIDTH//2), (HEIGHT//4), 100, 1, 0)
+
+            text_width = (display.measure_text(str(rw_fe), 1))//2
+            display.text(str(rw_fe), (WIDTH//2) - text_width, (HEIGHT//4), 100, 1, 0)
                 
             if (int(rw_r) > 35) or (int(rw_r) < -35):
                 display.set_pen(RED)
             else:
                 display.set_pen(GREEN)
                 
-            display.text(str(rw_r), (WIDTH//2), ((HEIGHT//4) * 3), 100, 1, 0)
+            text_width = (display.measure_text(str(rw_r), 1))//2
+            display.text(str(rw_r), (WIDTH//2) - text_width, ((HEIGHT//4) * 3), 100, 1, 0)
         
         else:
             display.text("sub menu error", (WIDTH//2), 25, 100, 1, 0)
 
     # MENU 2
     if selected_menu == 2:
-        display.text("Back", (WIDTH//2), 25, 100, 1, 0)
+        text_width = (display.measure_text("Back", 1))//2
+        display.text("Back", (WIDTH//2) - text_width, 25, 100, 1, 0)
 
         if (int(neck_fe) > 35) or (int(neck_fe) < -35):
             display.set_pen(RED)
         else:
             display.set_pen(GREEN)
 
-        display.text(str(neck_fe), (WIDTH//2), (HEIGHT//2), 100, 1, 0)
+        text_width = (display.measure_text(str(neck_fe), 1))//2
+        display.text(str(neck_fe), (WIDTH//2) - text_width, (HEIGHT//2), 100, 1, 0)
 
     # MENU 3
     if selected_menu == 3:
-        lw_fe = abs(lw_fe)
-        lw_r = abs(lw_r)
-        rw_fe = abs(rw_fe)
-        rw_r = abs(rw_r)
-        neck_fe = abs(neck_fe)
+        lw_fe = abs(int(lw_fe))
+        lw_r = abs(int(lw_r))
+        rw_fe = abs(int(rw_fe))
+        rw_r = abs(int(rw_r))
+        neck_fe = abs(int(neck_fe))
 
         if (lw_fe > 35) or (lw_r > 35) or (rw_fe > 35) or (rw_r > 35) or (neck_fe > 20):
             display.set_pen(RED)
         else:
             display.set_pen(GREEN)
 
-        display.rectangle(10, 10, 100, 100)
+        display.rectangle(0, 0, 320, 240)
 
 
 def update_display(fe, rad, device):  #flexion extension, radial, device
