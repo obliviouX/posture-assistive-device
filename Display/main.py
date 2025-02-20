@@ -37,7 +37,8 @@ async def receive_data_task(characteristic):
     while True:
         try:
             data = await characteristic.read()
-            
+            user_input() # check for user input
+
             if data:
                 num_messages_received = 1
                 received_data = decode_message(data)
@@ -58,6 +59,7 @@ async def receive_data_task(characteristic):
 
 async def ble_scan(peripheral_name):
     # Scan for a BLE device with the matching name and service UUID
+    user_input() # check for user input
 
     print(f"Scanning for BLE Peripheral named {peripheral_name}...")
 
@@ -73,6 +75,8 @@ async def run_central_mode():
     # Loop through each peripheral in RECEIVING_FROM
     for peripheral_name in RECEIVING_FROM:
         device = await ble_scan(peripheral_name)
+
+        user_input() # check for user input
 
         if device is None:
             print(f"{peripheral_name} not found. Skipping.")
@@ -121,7 +125,6 @@ async def main():
     while True:
         tasks = [
             asyncio.create_task(run_central_mode()),
-            asyncio.create_task(user_input()),
         ]
         await asyncio.gather(*tasks)
 
