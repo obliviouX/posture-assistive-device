@@ -67,25 +67,6 @@ selected_menu = 0
 selected_sub_menu = 0   # default sub menu for the 'b' button
 
 
-def user_input():
-    global selected_menu, selected_sub_menu
-
-    if button_a.value() == 0:
-        selected_menu = 0
-
-    if button_b.value() == 0:
-        selected_menu = 1
-        selected_sub_menu += 1
-        if selected_sub_menu > 2:   # rollover check
-            selected_sub_menu = 0
-  
-    if button_x.value() == 0:
-        selected_menu = 2
-
-    if button_y.value() == 0:
-        selected_menu = 3
-
-
 def show_connected_device(device):
     if device == "1":
         display.set_pen(BLUE)
