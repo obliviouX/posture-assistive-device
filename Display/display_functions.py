@@ -107,12 +107,15 @@ def create_display_layout():
 
     # MENU 0
     if selected_menu == 0:
-        display.text("LW", ((WIDTH//4) - 20), 25, 100, 1, 0)
-        display.text("RW", (WIDTH//2), 25, 100, 1, 0)
-        display.text("B", (((WIDTH//4) * 3) + 20), 25, 100, 1, 0)
+        text_width = (display.measure_text("LW", 1))//2
+        display.text("LW", ((WIDTH//4) - text_width), 25, 100, 1, 0)
+        text_width = (display.measure_text("RW", 1))//2
+        display.text("RW", (WIDTH//2) - text_width, 25, 100, 1, 0)
+        text_width = (display.measure_text("B", 1))//2
+        display.text("B", ((WIDTH//4) * 3) - text_width, 25, 100, 1, 0)
 
-        display.text("FE", 10, (HEIGHT//4), 100, 1, 0)
-        display.text("R", 10, ((HEIGHT//4) * 3), 100, 1, 0)
+        display.text("FE", 3, (HEIGHT//4), 100, 1, 0)
+        display.text("R", 3, ((HEIGHT//4) * 3), 100, 1, 0)
 
         # left wrist values
         if (int(lw_fe) > 35) or (int(lw_fe) < -35):
@@ -120,29 +123,33 @@ def create_display_layout():
         else:
             display.set_pen(GREEN)
         
-        display.text(str(lw_fe), ((WIDTH//4) - 20), (HEIGHT//4), 100, 1, 0)
+        text_width = (display.measure_text(str(lw_fe), 1))//2
+        display.text(str(lw_fe), (WIDTH//4) - text_width, (HEIGHT//4), 100, 1, 0)
             
         if (int(lw_r) > 35) or (int(lw_r) < -35):
             display.set_pen(RED)
         else:
             display.set_pen(GREEN)
 
-        display.text(str(lw_r), ((WIDTH//4) - 20), ((HEIGHT//4) * 3), 100, 1, 0)
+        text_width = (display.measure_text(str(lw_r), 1))//2
+        display.text(str(lw_r), (WIDTH//4) - text_width, ((HEIGHT//4) * 3), 100, 1, 0)
 
         # right wrist values
         if (int(rw_fe) > 35) or (int(rw_fe) < -35):
             display.set_pen(RED)
         else:
             display.set_pen(GREEN)
-                
-        display.text(str(rw_fe), (WIDTH//2), (HEIGHT//4), 100, 1, 0)
+        
+        text_width = (display.measure_text(str(rw_fe), 1))//2
+        display.text(str(rw_fe), (WIDTH//2) - text_width, (HEIGHT//4), 100, 1, 0)
                 
         if (int(rw_r) > 35) or (int(rw_r) < -35):
             display.set_pen(RED)
         else:
             display.set_pen(GREEN)
                 
-        display.text(str(rw_r), (WIDTH//2), ((HEIGHT//4) * 3), 100, 1, 0)
+        text_width = (display.measure_text(str(rw_r), 1))//2
+        display.text(str(rw_r), (WIDTH//2) - text_width, ((HEIGHT//4) * 3), 100, 1, 0)
 
         # back/neck values
         if (int(neck_fe) > 35) or (int(neck_fe) < -35):
@@ -150,17 +157,20 @@ def create_display_layout():
         else:
             display.set_pen(GREEN)
 
-        display.text(str(neck_fe), (((WIDTH//4) * 3) + 20), (HEIGHT//4), 100, 1, 0)
+        text_width = (display.measure_text(str(neck_fe), 1))//2
+        display.text(str(neck_fe), (((WIDTH//4) * 3) - text_width), (HEIGHT//4), 100, 1, 0)
 
 
     # MENU 1
     if selected_menu == 1:
 
         if selected_sub_menu == 0:
-            display.text("LW", (WIDTH//3), 25, 100, 1, 0)
-            display.text("RW", ((WIDTH//3) * 2), 25, 100, 1, 0)
-            display.text("FE", 10, (HEIGHT//4), 100, 1, 0)
-            display.text("R", 10, ((HEIGHT//4) * 3), 100, 1, 0)
+            text_width = (display.measure_text("LW", 1))//2
+            display.text("LW", (WIDTH//3) - text_width, 25, 100, 1, 0)
+            text_width = (display.measure_text("RW", 1))//2
+            display.text("RW", ((WIDTH//3) * 2) - text_width, 25, 100, 1, 0)
+            display.text("FE", 3, (HEIGHT//4), 100, 1, 0)
+            display.text("R", 3, ((HEIGHT//4) * 3), 100, 1, 0)
 
             # left wrist values
             if (int(lw_fe) > 35) or (int(lw_fe) < -35):
@@ -168,44 +178,8 @@ def create_display_layout():
             else:
                 display.set_pen(GREEN)
             
-            display.text(str(lw_fe), (WIDTH//3), (HEIGHT//4), 100, 1, 0)
-            
-            if (int(lw_r) > 35) or (int(lw_r) < -35):
-                display.set_pen(RED)
-            else:
-                display.set_pen(GREEN)
-
-            display.text(str(lw_r), (WIDTH//3), ((HEIGHT//4) * 3), 100, 1, 0)
-
-            # right wrist values
-            if (int(rw_fe) > 35) or (int(rw_fe) < -35):
-                display.set_pen(RED)
-            else:
-                display.set_pen(GREEN)
-                
-            display.text(str(rw_fe), ((WIDTH//3) * 2), (HEIGHT//4), 100, 1, 0)
-                
-            if (int(rw_r) > 35) or (int(rw_r) < -35):
-                display.set_pen(RED)
-            else:
-                display.set_pen(GREEN)
-                
-            display.text(str(rw_r), ((WIDTH//3) * 2), ((HEIGHT//4) * 3), 100, 1, 0)
-
-
-        elif selected_sub_menu == 1:
-            text_width = (display.measure_text("Left Wrist", 1))//2
-            display.text("Left Wrist", (WIDTH//2) - text_width, 25, 100, 1, 0)
-            display.text("FE", 10, (HEIGHT//4), 100, 1, 0)
-            display.text("R", 10, ((HEIGHT//4) * 3), 100, 1, 0)
-
-            if (int(lw_fe) > 35) or (int(lw_fe) < -35):
-                display.set_pen(RED)
-            else:
-                display.set_pen(GREEN)
-            
             text_width = (display.measure_text(str(lw_fe), 1))//2
-            display.text(str(lw_fe), (WIDTH//2), (HEIGHT//4), 100, 1, 0)
+            display.text(str(lw_fe), (WIDTH//3) - text_width, (HEIGHT//4), 100, 1, 0)
             
             if (int(lw_r) > 35) or (int(lw_r) < -35):
                 display.set_pen(RED)
@@ -213,13 +187,53 @@ def create_display_layout():
                 display.set_pen(GREEN)
 
             text_width = (display.measure_text(str(lw_r), 1))//2
-            display.text(str(lw_r), (WIDTH//2), ((HEIGHT//4) * 3), 100, 1, 0)
+            display.text(str(lw_r), (WIDTH//3) - text_width, ((HEIGHT//4) * 3), 100, 1, 0)
+
+            # right wrist values
+            if (int(rw_fe) > 35) or (int(rw_fe) < -35):
+                display.set_pen(RED)
+            else:
+                display.set_pen(GREEN)
+            
+            text_width = (display.measure_text(str(rw_fe), 1))//2
+            display.text(str(rw_fe), ((WIDTH//3) * 2) - text_width, (HEIGHT//4), 100, 1, 0)
+                
+            if (int(rw_r) > 35) or (int(rw_r) < -35):
+                display.set_pen(RED)
+            else:
+                display.set_pen(GREEN)
+            
+            text_width = (display.measure_text(str(rw_r), 1))//2
+            display.text(str(rw_r), ((WIDTH//3) * 2) - text_width, ((HEIGHT//4) * 3), 100, 1, 0)
+
+
+        elif selected_sub_menu == 1:
+            text_width = (display.measure_text("Left Wrist", 1))//2
+            display.text("Left Wrist", (WIDTH//2) - text_width, 25, 100, 1, 0)
+            display.text("FE", 3, (HEIGHT//4), 100, 1, 0)
+            display.text("R", 3, ((HEIGHT//4) * 3), 100, 1, 0)
+
+            if (int(lw_fe) > 35) or (int(lw_fe) < -35):
+                display.set_pen(RED)
+            else:
+                display.set_pen(GREEN)
+            
+            text_width = (display.measure_text(str(lw_fe), 1))//2
+            display.text(str(lw_fe), (WIDTH//2) - text_width, (HEIGHT//4), 100, 1, 0)
+            
+            if (int(lw_r) > 35) or (int(lw_r) < -35):
+                display.set_pen(RED)
+            else:
+                display.set_pen(GREEN)
+
+            text_width = (display.measure_text(str(lw_r), 1))//2
+            display.text(str(lw_r), (WIDTH//2) - text_width, ((HEIGHT//4) * 3), 100, 1, 0)
         
         elif selected_sub_menu == 2:
             text_width = (display.measure_text("Right Wrist", 1))//2
             display.text("Right Wrist", (WIDTH//2) - text_width, 25, 100, 1, 0)
-            display.text("FE", 10, (HEIGHT//4), 100, 1, 0)
-            display.text("R", 10, ((HEIGHT//4) * 3), 100, 1, 0)
+            display.text("FE", 3, (HEIGHT//4), 100, 1, 0)
+            display.text("R", 3, ((HEIGHT//4) * 3), 100, 1, 0)
 
             if (int(rw_fe) > 35) or (int(rw_fe) < -35):
                 display.set_pen(RED)
@@ -233,7 +247,7 @@ def create_display_layout():
                 display.set_pen(RED)
             else:
                 display.set_pen(GREEN)
-                
+
             text_width = (display.measure_text(str(rw_r), 1))//2
             display.text(str(rw_r), (WIDTH//2) - text_width, ((HEIGHT//4) * 3), 100, 1, 0)
         
