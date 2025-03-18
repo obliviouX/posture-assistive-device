@@ -16,10 +16,35 @@ filtered_hand_my = 0.0
 filtered_arm_mx = 0.0 
 filtered_arm_my = 0.0
 
-def rgb_led(r_value, g_value, b_value): # to set rgb values easier
+def rgb_led(r_value, g_value, b_value): # to set rgb values easier (values from 0 to 65535)
     red_pwm.duty_u16(r_value)
     green_pwm.duty_u16(g_value)
     blue_pwm.duty_u16(b_value)
+
+def red_led():      # for bad posture
+    red_pwm.duty_u16(10000)
+    green_pwm.duty_u16(0)
+    blue_pwm.duty_u16(0)
+
+def blue_led():     # for bluetooth
+    red_pwm.duty_u16(0)
+    green_pwm.duty_u16(0)
+    blue_pwm.duty_u16(10000)
+
+def orange_led():   # to show device has started
+    red_pwm.duty_u16(20000)
+    green_pwm.duty_u16(10000)
+    blue_pwm.duty_u16(0)
+
+def purple_led():   # to show calibration
+    red_pwm.duty_u16(10000)
+    green_pwm.duty_u16(0)
+    blue_pwm.duty_u16(10000)
+
+def led_off():      # turn off led
+    red_pwm.duty_u16(0)
+    green_pwm.duty_u16(0)
+    blue_pwm.duty_u16(0)
 
 def declare_globals():
     global pitch_diff, yaw_diff, roll_diff
