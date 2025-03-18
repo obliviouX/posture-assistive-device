@@ -8,26 +8,30 @@ from helpers import *
 from mpu9250 import MPU9250
 from utime import sleep
 import time
+import ujson as json
 
-rgb_led(20000, 0, 20000)
+orange_led()
 
-# green LED on Pico
+# turn off green LED on Pico
 onboard_LED = Pin("LED", Pin.OUT)
-onboard_LED.on()
+onboard_LED.off()
 
+# setup calibration button
+c_button = Pin(15, Pin.IN)
+c_state = button_pin.value()
+
+# set up imu power pins
 arm_imu_power = Pin(21, Pin.OUT)
 arm_imu_power.on()
 
 wrist_imu_power = Pin(20, Pin.OUT)
 wrist_imu_power.on()
 
-
-
-# IMU I2C SETUP
+# imu i2c setup
 i2c_hand = I2C(0, sda=Pin(16), scl=Pin(17), freq=400000) # define i2c pins
 i2c_arm = I2C(1, sda=Pin(18), scl=Pin(19), freq=400000)
 
-time.sleep(5)
+time.sleep(1)
 
 arm_imu = MPU9250(i2c_arm)               # define the address of the arm imu
 hand_imu = MPU9250(i2c_hand)             # define the address of the hand imu
@@ -35,10 +39,23 @@ hand_imu = MPU9250(i2c_hand)             # define the address of the hand imu
 time.sleep(2)
 rgb_led(30000, 30000, 0)
 time.sleep(2)
-#arm_imu.ak8963.calibrate(count=50)
-#hand_imu.ak8963.calibrate(count=50)
 
-onboard_LED.toggle()
+# calibration setup
+# checks if button is being held down on startup to initiate calibration
+if c_state == True:
+    arm_imu.ak8963.calibrate(count=100)
+    hand_imu.ak8963.calibrate(count=100)
+else:
+    try:
+        with open('savedata.json', 'r') as f:
+            data = json.load(f)
+            y = data["num"]
+            print(y)
+    except:
+        red_led()
+
+
+
 
 # Define UUIDs for the service and characteristic
 _SERVICE_UUID = bluetooth.UUID(0x1848)
