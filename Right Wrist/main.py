@@ -31,14 +31,13 @@ wrist_imu_power.on()
 i2c_hand = I2C(0, sda=Pin(16), scl=Pin(17), freq=400000) # define i2c pins
 i2c_arm = I2C(1, sda=Pin(18), scl=Pin(19), freq=400000)
 
+
+
+
 time.sleep(1)
 
 arm_imu = MPU9250(i2c_arm)               # define the address of the arm imu
 hand_imu = MPU9250(i2c_hand)             # define the address of the hand imu
-
-time.sleep(2)
-rgb_led(30000, 30000, 0)
-time.sleep(2)
 
 # calibration setup
 # checks if button is being held down on startup to initiate calibration
@@ -49,13 +48,28 @@ else:
     try:
         with open('savedata.json', 'r') as f:
             data = json.load(f)
-            y = data["num"]
-            print(y)
+            hand_offset_x = data["hand_offset_x"]
+            hand_offset_y = data["hand_offset_y"]
+            hand_offset_z = data["hand_offset_z"]
+            hand_scale_x = data["hand_scale_x"]
+            hand_scale_y = data["hand_scale_y"]
+            hand_scale_z = data["hand_scale_z"]
+
+            arm_offset_x = data["arm_offset_x"]
+            arm_offset_y = data["arm_offset_y"]
+            arm_offset_z = data["arm_offset_z"]
+            arm_scale_x = data["arm_scale_x"]
+            arm_scale_y = data["arm_scale_y"]
+            arm_scale_z = data["arm_scale_z"]
+
+        dummy_hand = MPU9250(i2c_hand)  # dummy to open up access to the ak8963
+        dummy_arm = MPU9250(i2c_arm)
+        # ak8963_hand = AK8963(  # NOT FINISHED )
     except:
         red_led()
 
 
-
+# MAIN PROGRAM
 
 # Define UUIDs for the service and characteristic
 _SERVICE_UUID = bluetooth.UUID(0x1848)

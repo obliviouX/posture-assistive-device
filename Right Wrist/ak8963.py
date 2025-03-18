@@ -149,11 +149,11 @@ class AK8963:
         minz = maxz = reading[2]
 
         while count:
-            rgb_led(7000, 8000, 1000)
+            purple_led()
             if (count % 10) == 0:
                 rgb_led(0,0,0)
             else:
-                rgb_led(7000,8000,1000)
+                purple_led()
             utime.sleep_ms(delay)
             reading = self.magnetic
             minx = min(minx, reading[0])
