@@ -32,18 +32,28 @@ i2c_hand = I2C(0, sda=Pin(16), scl=Pin(17), freq=400000) # define i2c pins
 i2c_arm = I2C(1, sda=Pin(18), scl=Pin(19), freq=400000)
 
 
-
-
 time.sleep(1)
 
-arm_imu = MPU9250(i2c_arm)               # define the address of the arm imu
-hand_imu = MPU9250(i2c_hand)             # define the address of the hand imu
-
+#hand_imu = MPU9250(i2c_hand)             # define the address of the hand imu
+#arm_imu = MPU9250(i2c_arm)               # define the address of the arm imu
+#e
 # calibration setup
 # checks if button is being held down on startup to initiate calibration
 if c_state == True:
-    arm_imu.ak8963.calibrate(count=100)
-    hand_imu.ak8963.calibrate(count=100)
+    hand_offset, hand_scale = hand_imu.ak8963.calibrate(count=100)
+    arm_offset, arm_scale = arm_imu.ak8963.calibrate(count=100)
+    
+    jsonData = {"hand_offset_x": hand_offset[1], "hand_offset_y": hand_offset[2], "hand_offset_z": hand_offset[3],
+                "hand_scale_x": hand_scale[1], "hand_scale_y": hand_scale[2], "hand_scale_z": hand_scale[3],
+                "arm_offset_x": arm_offset[1], "arm_offset_y": arm_offset[2], "arm_offset_z": arm_offset[3],
+                "arm_scale_x": arm_scale[1], "arm_scale_y": arm_scale[2], "arm_scale_z": arm_scale[3]
+                }
+    try:
+        with open('savedata.json', 'w') as f:
+            json.dump(jsonData, f)
+    except:
+        red_led()
+
 else:
     try:
         with open('savedata.json', 'r') as f:
@@ -64,7 +74,12 @@ else:
 
         dummy_hand = MPU9250(i2c_hand)  # dummy to open up access to the ak8963
         dummy_arm = MPU9250(i2c_arm)
-        # ak8963_hand = AK8963(  # NOT FINISHED )
+
+        ak8963_hand = AK8963(hand_imu, offset=(hand_offset_x, hand_offset_y, hand_offset_z), scale=(hand_scale_x, hand_scale_y, hand_scale_z))
+        ak8963_arm = AK8963(arm_imu, offset=(arm_offset_x, arm_offset_y, arm_offset_z), scale=(arm_scale_x, arm_scale_y, arm_scale_z))
+        
+        hand_imu = MPU9250(i2c_hand,ak9863=ak8963_hand)
+        arm_imu = MPU9250(i2c_arm, ak9863=ak8963_arm)
     except:
         red_led()
 
