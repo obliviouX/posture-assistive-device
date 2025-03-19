@@ -3,6 +3,7 @@ import csv
 import os
 import serial.tools.list_ports
 from datetime import datetime
+from time import sleep
 
 # Function to automatically detect the connected Pico's serial port
 def find_pico_port():
@@ -17,6 +18,16 @@ def find_pico_port():
 serial_port = find_pico_port()
 if not serial_port:
     print("Raspberry Pi Pico not found. Please check the connection.")
+    print("Exiting in 5 seconds...")
+    sleep(1)
+    print("Exiting in 4 seconds...")
+    sleep(1)
+    print("Exiting in 3 seconds...")
+    sleep(1)
+    print("Exiting in 2 seconds...")
+    sleep(1)
+    print("Exiting in 1 seconds...")
+    sleep(1)
     exit()
 
 baud_rate = 115200
