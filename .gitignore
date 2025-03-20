@@ -1,2 +1,6 @@
 *.csv
 .envrc
+dist/
+path/
+build/
+posture-assistive-device-data-logger.spec
