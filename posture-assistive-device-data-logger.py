@@ -8,7 +8,7 @@ from datetime import datetime
 def find_pico_port():
     ports = serial.tools.list_ports.comports()
     for port in ports:
-        if "USB" in port.description or "ACM" in port.description:  # Search for "USB" or "ACM"
+        if "USB" in port.description or "Board" in port.description:  # Search for "USB" or "Board" (Linux)
             return port.device
     return None
 
@@ -23,8 +23,8 @@ def check_serial_port(serial_port, baud_rate=115200):
 # Automatically find the connected Pico's serial port
 serial_port = find_pico_port()
 if not serial_port:
-    print("Raspberry Pi Pico not found.")
-    serial_port = input("Please enter the COM port manually (e.g., COM3 or /dev/ttyACM0): ")
+    print("Posture Assistive Device not found.")
+    serial_port = input("Please enter the COM port manually (e.g., COM2 or /dev/ttyACM2): ")
 
     # Validate the entered port
     while not check_serial_port(serial_port):
@@ -48,7 +48,9 @@ with serial.Serial(serial_port, baud_rate, timeout=1) as ser, open(file_name, "a
         writer.writerow(headers)
         file.flush()
 
-    print(f"Using Pico on {serial_port}. Logging data... Press Ctrl+C to stop.")
+    print(f"Using device on {serial_port}.")
+    print(f"Logging data...")
+    print(f"Press 'Ctrl+C' at any time to stop.")
 
     # Store latest values in a dictionary
     latest_values = {"1": ["", ""], "2": ["", ""], "3": [""]}
@@ -73,8 +75,8 @@ with serial.Serial(serial_port, baud_rate, timeout=1) as ser, open(file_name, "a
                 row.extend(latest_values["3"])  # Back (angle)
 
                 writer.writerow(row)
-                file.flush()  # Ensure real-time updates
-                print(row)  # Optional: Show real-time logging output
+                file.flush()  # Flush data for real-time updates
+                print(row)    # Optional: Show real-time logging output
 
         except KeyboardInterrupt:
             print("Data collection stopped.")
