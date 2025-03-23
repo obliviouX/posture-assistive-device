@@ -54,6 +54,15 @@ if c_state == True:
     except:
         red_led()
 
+    # After calibration, update the IMU with the new offsets and scales
+    ak8963_hand = AK8963(hand_imu, offset=(hand_offset[1], hand_offset[2], hand_offset[3]),
+                         scale=(hand_scale[1], hand_scale[2], hand_scale[3]))
+    ak8963_arm = AK8963(arm_imu, offset=(arm_offset[1], arm_offset[2], arm_offset[3]),
+                        scale=(arm_scale[1], arm_scale[2], arm_scale[3]))
+
+    hand_imu = MPU9250(i2c_hand, ak8963=ak8963_hand)
+    arm_imu = MPU9250(i2c_arm, ak8963=ak8963_arm)
+
 else:
     try:
         with open('savedata.json', 'r') as f:
