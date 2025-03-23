@@ -3,4 +3,5 @@
 dist/
 path/
 build/
+venv/
 posture-assistive-device-data-logger.spec
