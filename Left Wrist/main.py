@@ -31,7 +31,6 @@ wrist_imu_power.on()
 i2c_hand = I2C(0, sda=Pin(16), scl=Pin(17), freq=400000) # define i2c pins
 i2c_arm = I2C(1, sda=Pin(18), scl=Pin(19), freq=400000)
 
-
 time.sleep(1)
 
 #hand_imu = MPU9250(i2c_hand)             # define the address of the hand imu
