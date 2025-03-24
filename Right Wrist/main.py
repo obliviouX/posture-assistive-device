@@ -17,8 +17,8 @@ onboard_LED = Pin("LED", Pin.OUT)
 onboard_LED.off()
 
 # setup calibration button
-c_button = Pin(15, Pin.IN)
-c_state = button_pin.value()
+c_button = Pin(10, Pin.IN, Pin.PULL_UP)
+c_state = button.value()
 
 # set up imu power pins
 arm_imu_power = Pin(21, Pin.OUT)
