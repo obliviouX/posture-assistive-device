@@ -6,6 +6,7 @@ from machine import Pin, I2C
 import struct
 from helpers import *
 from mpu9250 import MPU9250
+from ak8963 import AK8963
 from utime import sleep
 import time
 import ujson as json
@@ -18,7 +19,8 @@ onboard_LED.off()
 
 # setup calibration button
 c_button = Pin(10, Pin.IN, Pin.PULL_UP)
-c_state = button.value()
+c_state = c_button.value()
+print(c_state)
 
 # set up imu power pins
 arm_imu_power = Pin(21, Pin.OUT)
@@ -31,6 +33,7 @@ wrist_imu_power.on()
 i2c_hand = I2C(0, sda=Pin(16), scl=Pin(17), freq=400000) # define i2c pins
 i2c_arm = I2C(1, sda=Pin(18), scl=Pin(19), freq=400000)
 
+
 time.sleep(1)
 
 #hand_imu = MPU9250(i2c_hand)             # define the address of the hand imu
@@ -38,14 +41,19 @@ time.sleep(1)
 #e
 # calibration setup
 # checks if button is being held down on startup to initiate calibration
-if c_state == True:
-    hand_offset, hand_scale = hand_imu.ak8963.calibrate(count=100)
-    arm_offset, arm_scale = arm_imu.ak8963.calibrate(count=100)
+if c_state == False:
+    hand_dummy = MPU9250(i2c_hand)
+    arm_dummy = MPU9250(i2c_arm)
+    ak8963_hand = AK8963(i2c_hand)
+    ak8963_arm = AK8963(i2c_arm)
     
-    jsonData = {"hand_offset_x": hand_offset[1], "hand_offset_y": hand_offset[2], "hand_offset_z": hand_offset[3],
-                "hand_scale_x": hand_scale[1], "hand_scale_y": hand_scale[2], "hand_scale_z": hand_scale[3],
-                "arm_offset_x": arm_offset[1], "arm_offset_y": arm_offset[2], "arm_offset_z": arm_offset[3],
-                "arm_scale_x": arm_scale[1], "arm_scale_y": arm_scale[2], "arm_scale_z": arm_scale[3]
+    hand_offset, hand_scale = ak8963_hand.calibrate(count=10)
+    arm_offset, arm_scale = ak8963_arm.calibrate(count=10)
+    
+    jsonData = {"hand_offset_x": hand_offset[0], "hand_offset_y": hand_offset[1], "hand_offset_z": hand_offset[2],
+                "hand_scale_x": hand_scale[0], "hand_scale_y": hand_scale[1], "hand_scale_z": hand_scale[2],
+                "arm_offset_x": arm_offset[0], "arm_offset_y": arm_offset[1], "arm_offset_z": arm_offset[2],
+                "arm_scale_x": arm_scale[0], "arm_scale_y": arm_scale[1], "arm_scale_z": arm_scale[2]
                 }
     try:
         with open('savedata.json', 'w') as f:
@@ -54,10 +62,10 @@ if c_state == True:
         red_led()
 
     # After calibration, update the IMU with the new offsets and scales
-    ak8963_hand = AK8963(hand_imu, offset=(hand_offset[1], hand_offset[2], hand_offset[3]),
-                         scale=(hand_scale[1], hand_scale[2], hand_scale[3]))
-    ak8963_arm = AK8963(arm_imu, offset=(arm_offset[1], arm_offset[2], arm_offset[3]),
-                        scale=(arm_scale[1], arm_scale[2], arm_scale[3]))
+    ak8963_hand = AK8963(i2c_hand, offset=(hand_offset[0], hand_offset[1], hand_offset[2]),
+                         scale=(hand_scale[0], hand_scale[1], hand_scale[2]))
+    ak8963_arm = AK8963(i2c_arm, offset=(arm_offset[0], arm_offset[1], arm_offset[2]),
+                        scale=(arm_scale[0], arm_scale[1], arm_scale[2]))
 
     hand_imu = MPU9250(i2c_hand, ak8963=ak8963_hand)
     arm_imu = MPU9250(i2c_arm, ak8963=ak8963_arm)
@@ -65,6 +73,7 @@ if c_state == True:
 else:
     try:
         with open('savedata.json', 'r') as f:
+            print("OPENING SAVEDATA")
             data = json.load(f)
             hand_offset_x = data["hand_offset_x"]
             hand_offset_y = data["hand_offset_y"]
@@ -79,16 +88,22 @@ else:
             arm_scale_x = data["arm_scale_x"]
             arm_scale_y = data["arm_scale_y"]
             arm_scale_z = data["arm_scale_z"]
-
-        dummy_hand = MPU9250(i2c_hand)  # dummy to open up access to the ak8963
-        dummy_arm = MPU9250(i2c_arm)
-
-        ak8963_hand = AK8963(hand_imu, offset=(hand_offset_x, hand_offset_y, hand_offset_z), scale=(hand_scale_x, hand_scale_y, hand_scale_z))
-        ak8963_arm = AK8963(arm_imu, offset=(arm_offset_x, arm_offset_y, arm_offset_z), scale=(arm_scale_x, arm_scale_y, arm_scale_z))
         
-        hand_imu = MPU9250(i2c_hand,ak9863=ak8963_hand)
-        arm_imu = MPU9250(i2c_arm, ak9863=ak8963_arm)
+            print("DONE OPENING SAVEDATA")
+            hand_dummy = MPU9250(i2c_hand)  # dummy to open up access to the ak8963
+            arm_dummy = MPU9250(i2c_arm)
+        
+            print("DUMMY IMUs CREATED")
+            ak8963_hand = AK8963(i2c_hand, offset=(hand_offset_x, hand_offset_y, hand_offset_z), scale=(hand_scale_x, hand_scale_y, hand_scale_z))
+            ak8963_arm = AK8963(i2c_arm, offset=(arm_offset_x, arm_offset_y, arm_offset_z), scale=(arm_scale_x, arm_scale_y, arm_scale_z))
+        
+            print("SETTING UP REAL IMUs")
+            hand_imu = MPU9250(i2c_hand,ak8963=ak8963_hand)
+            arm_imu = MPU9250(i2c_arm, ak8963=ak8963_arm)
+            print("IMUs ARE SET UP")
+        
     except:
+        print("ERROR IN SAVEDATA")
         red_led()
 
 

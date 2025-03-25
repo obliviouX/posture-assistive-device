@@ -70,9 +70,9 @@ def calc_wrist_angles(hand_ax, hand_ay, hand_az, arm_ax, arm_ay, arm_az, hand_mx
     arm_yaw = 90 - math.atan2(filtered_arm_my, filtered_arm_mx) * 180 / math.pi
 
     # angles in relation to arm IMU
-    roll_diff = round(arm_roll - hand_roll)
-    pitch_diff = round(arm_pitch - hand_pitch)
-    yaw_diff = round(((arm_yaw - hand_yaw) + 180) % 360 - 180)
+    roll_diff = abs(round(arm_roll - hand_roll))
+    pitch_diff = abs(round(arm_pitch - hand_pitch))
+    yaw_diff = abs(round(((arm_yaw - hand_yaw) + 180) % 360 - 180))
 
     # testing
     print(" " * 100, end='\r')  # Clear the line (print spaces)
