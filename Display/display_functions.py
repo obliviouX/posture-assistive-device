@@ -20,13 +20,13 @@ button_y = Pin(15, Pin.IN, Pin.PULL_UP)
 # interrupts for each button
 def callback_a(button_a):
     global selected_menu
-    print("button a pressed")
+    #print("button a pressed")
     selected_menu = 0
 button_a.irq(trigger=button_a.IRQ_RISING, handler=callback_a)
 
 def callback_b(button_b):
     global selected_menu, selected_sub_menu
-    print("button b pressed")
+    #print("button b pressed")
     selected_menu = 1
     selected_sub_menu += 1
     if selected_sub_menu > 2:
@@ -35,13 +35,13 @@ button_b.irq(trigger=button_b.IRQ_RISING, handler=callback_b)
 
 def callback_x(button_x):
     global selected_menu
-    print("button x pressed")
+    #print("button x pressed")
     selected_menu = 2
 button_x.irq(trigger=button_x.IRQ_RISING, handler=callback_x)
 
 def callback_y(button_y):
     global selected_menu
-    print("button y pressed")
+    #print("button y pressed")
     selected_menu = 3
 button_y.irq(trigger=button_y.IRQ_RISING, handler=callback_y)
 
@@ -57,11 +57,11 @@ YELLOW = display.create_pen(255,255,0)
 
 # global variables so they can stay on the screen
 # instead of removed when display is updated
-lw_fe = '999'   # if any of these is 999, it means it is not connected
-lw_r = '999'    # so a dash can be displayed
-rw_fe = '999'
-rw_r = '999'
-neck_fe = '999'
+lw_fe = ''   # if any of these is 999, it means it is not connected
+lw_r = ''    # so a dash can be displayed
+rw_fe = ''
+rw_r = ''
+neck_fe = ''
 
 selected_menu = 0
 selected_sub_menu = 0   # default sub menu for the 'b' button
@@ -110,7 +110,7 @@ def create_display_layout():
         text_width = (display.measure_text("LW", 1))//2
         display.text("LW", ((WIDTH//4) - text_width), 25, 100, 1, 0)
         text_width = (display.measure_text("RW", 1))//2
-        display.text("RW", ((WIDTH//5) * 3) - text_width, 25, 100, 1, 0)
+        display.text("RW", ((WIDTH//50) * 27) - text_width + 10, 25, 100, 1, 0)
         text_width = (display.measure_text("B", 1))//2
         display.text("B", ((WIDTH//6) * 5) - text_width, 25, 100, 1, 0)
 
@@ -118,7 +118,9 @@ def create_display_layout():
         display.text("R", 3, ((HEIGHT//4) * 3), 100, 1, 0)
 
         # left wrist values
-        if (int(lw_fe) > 35) or (int(lw_fe) < -35):
+        if (lw_fe == ''):
+            display.set_pen(BLACK)
+        elif (int(lw_fe) > 35):
             display.set_pen(RED)
         else:
             display.set_pen(GREEN)
@@ -126,7 +128,9 @@ def create_display_layout():
         text_width = (display.measure_text(str(lw_fe), 1))//2
         display.text(str(lw_fe), (WIDTH//4) - text_width, (HEIGHT//4), 100, 1, 0)
             
-        if (int(lw_r) > 35) or (int(lw_r) < -35):
+        if (lw_r == ''):
+            display.set_pen(BLACK)
+        elif (int(lw_r) > 35):
             display.set_pen(RED)
         else:
             display.set_pen(GREEN)
@@ -135,24 +139,30 @@ def create_display_layout():
         display.text(str(lw_r), (WIDTH//4) - text_width, ((HEIGHT//4) * 3), 100, 1, 0)
 
         # right wrist values
-        if (int(rw_fe) > 35) or (int(rw_fe) < -35):
+        if (rw_fe == ''):
+            display.set_pen(BLACK)
+        elif (int(rw_fe) > 35):
             display.set_pen(RED)
         else:
             display.set_pen(GREEN)
         
         text_width = (display.measure_text(str(rw_fe), 1))//2
-        display.text(str(rw_fe), ((WIDTH//5) * 3) - text_width, (HEIGHT//4), 100, 1, 0)
-                
-        if (int(rw_r) > 35) or (int(rw_r) < -35):
+        display.text(str(rw_fe), ((WIDTH//50) * 27) - text_width + 10, (HEIGHT//4), 100, 1, 0)
+        
+        if (rw_r == ''):
+            display.set_pen(BLACK)
+        elif (int(rw_r) > 35):
             display.set_pen(RED)
         else:
             display.set_pen(GREEN)
                 
         text_width = (display.measure_text(str(rw_r), 1))//2
-        display.text(str(rw_r), ((WIDTH//5) * 3) - text_width, ((HEIGHT//4) * 3), 100, 1, 0)
+        display.text(str(rw_r), ((WIDTH//50) * 27) - text_width + 10, ((HEIGHT//4) * 3), 100, 1, 0)
 
         # back/neck values
-        if (int(neck_fe) > 35) or (int(neck_fe) < -35):
+        if (neck_fe == ''):
+            display.set_pen(BLACK)
+        elif (int(neck_fe) > 35):
             display.set_pen(RED)
         else:
             display.set_pen(GREEN)
@@ -173,7 +183,7 @@ def create_display_layout():
             display.text("R", 3, ((HEIGHT//4) * 3), 100, 1, 0)
 
             # left wrist values
-            if (int(lw_fe) > 35) or (int(lw_fe) < -35):
+            if (int(lw_fe) > 35):
                 display.set_pen(RED)
             else:
                 display.set_pen(GREEN)
@@ -181,7 +191,7 @@ def create_display_layout():
             text_width = (display.measure_text(str(lw_fe), 1))//2
             display.text(str(lw_fe), (WIDTH//3) - text_width, (HEIGHT//4), 100, 1, 0)
             
-            if (int(lw_r) > 35) or (int(lw_r) < -35):
+            if (int(lw_r) > 35):
                 display.set_pen(RED)
             else:
                 display.set_pen(GREEN)
@@ -190,7 +200,7 @@ def create_display_layout():
             display.text(str(lw_r), (WIDTH//3) - text_width, ((HEIGHT//4) * 3), 100, 1, 0)
 
             # right wrist values
-            if (int(rw_fe) > 35) or (int(rw_fe) < -35):
+            if (int(rw_fe) > 35):
                 display.set_pen(RED)
             else:
                 display.set_pen(GREEN)
@@ -198,7 +208,7 @@ def create_display_layout():
             text_width = (display.measure_text(str(rw_fe), 1))//2
             display.text(str(rw_fe), ((WIDTH//3) * 2) - text_width, (HEIGHT//4), 100, 1, 0)
                 
-            if (int(rw_r) > 35) or (int(rw_r) < -35):
+            if (int(rw_r) > 35):
                 display.set_pen(RED)
             else:
                 display.set_pen(GREEN)
@@ -213,7 +223,7 @@ def create_display_layout():
             display.text("FE", 3, (HEIGHT//4), 100, 1, 0)
             display.text("R", 3, ((HEIGHT//4) * 3), 100, 1, 0)
 
-            if (int(lw_fe) > 35) or (int(lw_fe) < -35):
+            if (int(lw_fe) > 35):
                 display.set_pen(RED)
             else:
                 display.set_pen(GREEN)
@@ -221,7 +231,7 @@ def create_display_layout():
             text_width = (display.measure_text(str(lw_fe), 1))//2
             display.text(str(lw_fe), (WIDTH//2) - text_width, (HEIGHT//4), 100, 1, 0)
             
-            if (int(lw_r) > 35) or (int(lw_r) < -35):
+            if (int(lw_r) > 35):
                 display.set_pen(RED)
             else:
                 display.set_pen(GREEN)
@@ -235,7 +245,7 @@ def create_display_layout():
             display.text("FE", 3, (HEIGHT//4), 100, 1, 0)
             display.text("R", 3, ((HEIGHT//4) * 3), 100, 1, 0)
 
-            if (int(rw_fe) > 35) or (int(rw_fe) < -35):
+            if (int(rw_fe) > 35):
                 display.set_pen(RED)
             else:
                 display.set_pen(GREEN)
@@ -243,7 +253,7 @@ def create_display_layout():
             text_width = (display.measure_text(str(rw_fe), 1))//2
             display.text(str(rw_fe), (WIDTH//2) - text_width, (HEIGHT//4), 100, 1, 0)
                 
-            if (int(rw_r) > 35) or (int(rw_r) < -35):
+            if (int(rw_r) > 35):
                 display.set_pen(RED)
             else:
                 display.set_pen(GREEN)
@@ -259,7 +269,7 @@ def create_display_layout():
         text_width = (display.measure_text("Back", 1))//2
         display.text("Back", (WIDTH//2) - text_width, 25, 100, 1, 0)
 
-        if (int(neck_fe) > 35) or (int(neck_fe) < -35):
+        if (int(neck_fe) > 35):
             display.set_pen(RED)
         else:
             display.set_pen(GREEN)
