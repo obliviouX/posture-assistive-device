@@ -121,8 +121,8 @@ async def run_peripheral_mode():
             await asyncio.gather(*tasks)
             connection.disconnect()
             print("Disconnected from the central device.")
-            print("Sleeping for 5 seconds.\n")
-            await asyncio.sleep(5)
+            print("Sleeping for 2 seconds.\n")
+            await asyncio.sleep(2)
             
     #print(f"{IAM} disconnected, waiting before advertising again...")
     #print("Entering sleep for 5 seconds...\n")  # Explicit new line

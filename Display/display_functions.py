@@ -51,14 +51,14 @@ WHITE = display.create_pen(255,255,255)
 RED = display.create_pen(255,0,0)
 GREEN = display.create_pen(0,255,0)
 BLUE = display.create_pen(0,0,255)
-LIGHT_BLUE = display.create_pen(0,50,255)
-ULTRA_LIGHT_BLUE = display.create_pen(0,125,255)
+LIGHT_BLUE = display.create_pen(0,100,220)
+ULTRA_LIGHT_BLUE = display.create_pen(0,250,250)
 YELLOW = display.create_pen(255,255,0)
 
 # global variables so they can stay on the screen
 # instead of removed when display is updated
-lw_fe = ''   # if any of these is '', it means it is not connected
-lw_r = ''    # so a blank can be displayed
+lw_fe = ''   # if any of these is 999, it means it is not connected
+lw_r = ''    # so a dash can be displayed
 rw_fe = ''
 rw_r = ''
 neck_fe = ''
