@@ -26,6 +26,11 @@ def red_led():      # for bad posture
     green_pwm.duty_u16(0)
     blue_pwm.duty_u16(0)
 
+def green_led():
+    red_pwm.duty_u16(0)
+    green_pwm.duty_u16(20000)
+    blue_pwm.duty_u16(0)
+
 def blue_led():     # for bluetooth
     red_pwm.duty_u16(0)
     green_pwm.duty_u16(0)

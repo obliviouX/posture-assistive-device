@@ -49,6 +49,8 @@ if c_state == False:
     ak8963_arm = AK8963(i2c_arm)
     
     hand_offset, hand_scale = ak8963_hand.calibrate(count=256, delay=200)
+    blue_led()
+    time.sleep(1)
     arm_offset, arm_scale = ak8963_arm.calibrate(count=256, delay=200)
     
     jsonData = {"hand_offset_x": hand_offset[0], "hand_offset_y": hand_offset[1], "hand_offset_z": hand_offset[2],
@@ -74,7 +76,7 @@ if c_state == False:
 else:
     try:
         with open('savedata.json', 'r') as f:
-            #print("OPENING SAVEDATA")
+            print("OPENING SAVEDATA")
             data = json.load(f)
             hand_offset_x = data["hand_offset_x"]
             hand_offset_y = data["hand_offset_y"]
