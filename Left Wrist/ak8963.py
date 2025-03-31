@@ -163,7 +163,7 @@ class AK8963:
             minz = min(minz, reading[2])
             maxz = max(maxz, reading[2])
             count -= 1
-            print(count)
+            #print(count)
 
         # Hard iron correction
         offset_x = (maxx + minx) / 2
