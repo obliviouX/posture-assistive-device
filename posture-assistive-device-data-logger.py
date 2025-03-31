@@ -105,7 +105,7 @@ with serial.Serial(serial_port, baud_rate, timeout=1) as ser, open(file_name, "a
         while True:
             line = ser.readline().decode("utf-8").strip()
             if line:
-                parts = line.split(",")
+                parts = line.split(" ")
                 if len(parts) >= 2:
                     sensor_id = parts[0]
                     values = parts[1:]
