@@ -32,8 +32,8 @@ def blue_led():     # for bluetooth
     blue_pwm.duty_u16(10000)
 
 def orange_led():   # to show device has started
-    red_pwm.duty_u16(20000)
-    green_pwm.duty_u16(10000)
+    red_pwm.duty_u16(34000)
+    green_pwm.duty_u16(35000)
     blue_pwm.duty_u16(0)
 
 def purple_led():   # to show calibration
@@ -74,14 +74,10 @@ def calc_wrist_angles(hand_ax, hand_ay, hand_az, arm_ax, arm_ay, arm_az, hand_mx
     pitch_diff = abs(round(arm_pitch - hand_pitch))
     yaw_diff = abs(round(((arm_yaw - hand_yaw) + 180) % 360 - 180))
 
-    # testing
-    print(" " * 100, end='\r')  # Clear the line (print spaces)
-    print("Hand Roll: ", roll_diff, "\t", "Hand Pitch: ", pitch_diff, "\t", " Hand Yaw: ", yaw_diff, "\t", "       ", end="\r")
-
-    if (roll_diff > 35 or roll_diff < -35) or (yaw_diff > 35 or yaw_diff < -35):
-        rgb_led(5000, 0, 0)
+    if (roll_diff > 35) or (yaw_diff > 35):
+        red_led()
     else:
-        rgb_led(0, 5000, 0)
+        green_led()
 
     return roll_diff, pitch_diff, yaw_diff
 
