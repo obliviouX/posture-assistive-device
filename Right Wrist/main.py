@@ -48,8 +48,8 @@ if c_state == False:
     ak8963_hand = AK8963(i2c_hand)
     ak8963_arm = AK8963(i2c_arm)
     
-    hand_offset, hand_scale = ak8963_hand.calibrate(count=10)
-    arm_offset, arm_scale = ak8963_arm.calibrate(count=10)
+    hand_offset, hand_scale = ak8963_hand.calibrate(count=256, delay=200)
+    arm_offset, arm_scale = ak8963_arm.calibrate(count=256, delay=200)
     
     jsonData = {"hand_offset_x": hand_offset[0], "hand_offset_y": hand_offset[1], "hand_offset_z": hand_offset[2],
                 "hand_scale_x": hand_scale[0], "hand_scale_y": hand_scale[1], "hand_scale_z": hand_scale[2],
@@ -214,7 +214,6 @@ async def run_peripheral_mode():
 async def main():
     while True:
         # create a BLE task to run asynchronously
-        #UNCOMMENT BELOW THIS, COMMENTED OUT FOR TESTING
         tasks = [
             asyncio.create_task(run_peripheral_mode()), # run the run_peripheral_mode() function asynchronously
         ]

@@ -22,7 +22,7 @@ def rgb_led(r_value, g_value, b_value): # to set rgb values easier (values from 
     blue_pwm.duty_u16(b_value)
 
 def red_led():      # for bad posture
-    red_pwm.duty_u16(10000)
+    red_pwm.duty_u16(20000)
     green_pwm.duty_u16(0)
     blue_pwm.duty_u16(0)
 
@@ -37,9 +37,9 @@ def orange_led():   # to show device has started
     blue_pwm.duty_u16(0)
 
 def purple_led():   # to show calibration
-    red_pwm.duty_u16(10000)
+    red_pwm.duty_u16(30000)
     green_pwm.duty_u16(0)
-    blue_pwm.duty_u16(10000)
+    blue_pwm.duty_u16(35000)
 
 def led_off():      # turn off led
     red_pwm.duty_u16(0)
