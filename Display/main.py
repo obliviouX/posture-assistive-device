@@ -6,6 +6,8 @@ from sys import exit
 from display_functions import *
 from pimoroni import RGBLED
 
+devices_conn = 0 # keeps track of how long it has been without a device being connected
+
 # Define UUIDs for the service and characteristic
 _SERVICE_UUID = bluetooth.UUID(0x1848)
 _CHARACTERISTIC_UUID = bluetooth.UUID(0x2A6E)
@@ -31,7 +33,8 @@ def decode_message(message):
     return message.decode('utf-8')
 
 
-async def receive_data_task(characteristic):
+async def receive_data_task(characteristic,connection):
+    global devices_conn
     # for some reason, this central device would receive multiple messages/lines of data
     # so num_messages_received checks to see when 1 message is received then breaks out of the loop.
     # basically it acts like a flag for when one message is received.
@@ -47,17 +50,18 @@ async def receive_data_task(characteristic):
                 numbers = received_data.split(',')
                 #print("Device: ", numbers[0], "Roll: ", numbers[1], "Pitch: ", numbers[2], "Yaw: ", numbers[3], end="\n")
                 print(numbers[0], numbers[1], numbers[3])
-                update_display(numbers[1], numbers[3], numbers[0])  # flexion/extension, radial, device
-                await asyncio.sleep(0.5)
+                update_display(numbers[1], numbers[3], numbers[0], devices_conn)  # flexion, radial, device
+                #await asyncio.sleep(0.5)
                 if num_messages_received == 1:
+                    connection.disconnect()
                     break
 
         except asyncio.TimeoutError:
-            #print("Timeout waiting for data.")
+            print("Timeout waiting for data.")
             led.set_rgb(5,0,0)
             break
         except Exception as e:
-            #print(f"Error receiving data: {e}")
+            print(f"Error receiving data: {e}")
             led.set_rgb(5,0,0)
             break
 
@@ -65,36 +69,43 @@ async def receive_data_task(characteristic):
 async def ble_scan(peripheral_name):
     # Scan for a BLE device with the matching name and service UUID
 
-    #print(f"Scanning for BLE Peripheral named {peripheral_name}...")
+    print(f"Scanning for BLE Peripheral named {peripheral_name}...")
 
-    async with aioble.scan(1500, interval_us=20000, window_us=20000, active=True) as scanner:
+    async with aioble.scan(3000, interval_us=20000, window_us=20000, active=True) as scanner:
         async for result in scanner:
             if result.name() == peripheral_name and BLE_SVC_UUID in result.services():
-                #print(f"found {result.name()} with service uuid {BLE_SVC_UUID}")
+                print(f"found {result.name()} with service uuid {BLE_SVC_UUID}")
                 return result
     return None
 
 
 async def run_central_mode():
+    global devices_conn
     # Loop through each peripheral in RECEIVING_FROM
     for peripheral_name in RECEIVING_FROM:
         device = await ble_scan(peripheral_name)
 
         if device is None:
-            #print(f"{peripheral_name} not found. Skipping.")
+            print(f"{peripheral_name} not found. Skipping.")
+            devices_conn += 1
+            if devices_conn > 10:
+                devices_conn = 10
+                update_display(0,0,4,devices_conn)
             continue
-        #print(f"Device found: {device}, name is {device.name()}")
-
+        print(f"Device found: {device}, name is {device.name()}")
+        
+        devices_conn = 0
+        
         try:
-            #print(f"Connecting to {device.name()}")
+            print(f"Connecting to {device.name()}")
             connection = await device.device.connect()
 
         except asyncio.TimeoutError:
-            #print("Timeout during connection")
+            print("Timeout during connection")
             led.set_rgb(5,0,0)
             continue
 
-        #print(f"{IAM} connected to {connection}")
+        print(f"{IAM} connected to {connection}")
 
         # Discover services
         async with connection:
@@ -102,26 +113,26 @@ async def run_central_mode():
                 service = await connection.service(BLE_SVC_UUID)
                 characteristic = await service.characteristic(BLE_CHARACTERISTIC_UUID)
             except (asyncio.TimeoutError, AttributeError):
-                #print("Timed out discovering services/characteristics")
+                print("Timed out discovering services/characteristics")
                 led.set_rgb(5,0,0)
                 continue
             except Exception as e:
-                #print(f"Error discovering services {e}")
+                print(f"Error discovering services {e}")
                 led.set_rgb(5,0,0)
                 await connection.disconnect()
                 continue
 
             tasks = [
-                asyncio.create_task(receive_data_task(characteristic)),
+                asyncio.create_task(receive_data_task(characteristic,connection)),
             ]
             await asyncio.gather(*tasks)
 
             # Disconnect after receiving data
             await connection.disconnected()
-            #print(f"{IAM} disconnected from {device.name()}")
+            print(f"{IAM} disconnected from {device.name()}")
 
             # Delay before connecting to the next device
-            await asyncio.sleep(1)
+            await asyncio.sleep(0.5)
 
 async def main():
     show_connected_device(4) # show a red circle to notify nothing is connected
