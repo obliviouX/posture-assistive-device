@@ -76,7 +76,7 @@ if c_state == False:
 else:
     try:
         with open('savedata.json', 'r') as f:
-            print("OPENING SAVEDATA")
+            #print("OPENING SAVEDATA")
             data = json.load(f)
             hand_offset_x = data["hand_offset_x"]
             hand_offset_y = data["hand_offset_y"]
@@ -164,7 +164,7 @@ async def send_data_task(connection, characteristic):
         return
 
     message = await get_imu_data()
-    #print(f"sending message: {message}")
+    print(f"sending message: {message}")
 
     try:
         msg = encode_message(message)
@@ -208,7 +208,7 @@ async def run_peripheral_mode():
             #print("Sleeping for 4 seconds.\n")
             await asyncio.sleep(0.5)
             led_off()
-            machine.lightsleep(4000)
+            return
             
     #print(f"{IAM} disconnected, waiting before advertising again...")
 
@@ -220,6 +220,7 @@ async def main():
             asyncio.create_task(run_peripheral_mode()), # run the run_peripheral_mode() function asynchronously
         ]
         await asyncio.gather(*tasks)
+        machine.lightsleep(4000)
 
 asyncio.run(main())
 
