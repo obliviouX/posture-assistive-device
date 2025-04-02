@@ -4,34 +4,29 @@ import asyncio
 from sys import exit
 from machine import Pin, I2C
 import struct
-#from helpers import *
-from imu import MPU6050
-from utime import sleep
-from utime import sleep_ms
+from mpu9250 import MPU9250
+import utime
 import time
 import math
 
 # green LED on Pico
 onboard_LED = Pin("LED", Pin.OUT)
-onboard_LED.on()
+onboard_LED.off()
+
 # pin that supplies power to the IMU
 imu_power = Pin(18, Pin.OUT)
 imu_power.on()
 
-# IMU I2C SETUP
-time.sleep(1)
-i2c_neck = I2C(0, sda=Pin(16), scl=Pin(17), freq=400000) # define i2c pins
-sleep_ms(3000)
-neck_imu = MPU6050(i2c_neck)               # define the address of the arm imu
 
-#onboard_LED.off()
+# IMU I2C SETUP
+i2c_neck = I2C(0,scl=Pin(17),sda=Pin(16))  # define i2c pins
+neck_imu = MPU9250(i2c_neck)               # define the address of the arm imu
 
 # Define UUIDs for the service and characteristic
 _SERVICE_UUID = bluetooth.UUID(0x1848)
 _CHARACTERISTIC_UUID = bluetooth.UUID(0x2A6E)
 
 # Change 'IAM' to 'Left_Wrist' or 'Right_Wrist'
-#IAM = "Right_Wrist"
 IAM = "Neck"
 IAM_SENDING_TO = "Central"
 
@@ -51,11 +46,11 @@ def encode_message(message):
 
 
 async def get_imu_data():
-    neck_ay = round(neck_imu.accel.y,5)
-    neck_az = round(neck_imu.accel.z,5)
+    neck_ay = round(neck_imu.acceleration[1])
+    neck_az = round(neck_imu.acceleration[2])
     neck_roll = math.atan2(neck_az, neck_ay) * 180 / math.pi
     neck_roll = abs(round(neck_roll))
-    
+    print(f"{neck_roll}")
     # Data structure: message = f"device,roll,pitch,yaw"
     # device: 1 = Left_Wrist
     # device: 2 = Right_Wrist
@@ -121,16 +116,9 @@ async def run_peripheral_mode():
             await asyncio.gather(*tasks)
             connection.disconnect()
             print("Disconnected from the central device.")
-            print("Sleeping for 2 seconds.\n")
-            await asyncio.sleep(2)
-            
-    #print(f"{IAM} disconnected, waiting before advertising again...")
-    #print("Entering sleep for 5 seconds...\n")  # Explicit new line
-    #await asyncio.sleep(5)  # Pause for 5 seconds before advertising again
-    #time.sleep(5)				# sleep for 5 seconds
-    #asyncio.sleep(5)			# async sleep for 5 seconds
-    #machine.lightsleep(5000)  	# light sleep for 5 seconds
-    #machine.deepsleep(5000)	# deep sleep for 5 seconds (also may need to disable wifi chip)
+            print("Sleeping for 4 seconds.\n")
+            machine.lightsleep(4000)
+
 
 async def main():
     while True:
