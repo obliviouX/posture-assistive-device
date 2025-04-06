@@ -284,8 +284,6 @@ async def main():
     global user_flexion_offset, user_radial_offset, set_offset_flag
     blue_led()
     while True:
-        # create a BLE task to run asynchronously
-        #UNCOMMENT BELOW THIS, COMMENTED OUT FOR TESTING
         tasks = [
             asyncio.create_task(run_peripheral_mode()), # run the run_peripheral_mode() function asynchronously
         ]    
