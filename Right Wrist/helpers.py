@@ -22,13 +22,13 @@ def rgb_led(r_value, g_value, b_value): # to set rgb values easier (values from 
     blue_pwm.duty_u16(b_value)
 
 def red_led():      # for bad posture
-    red_pwm.duty_u16(20000)
+    red_pwm.duty_u16(30000)
     green_pwm.duty_u16(0)
     blue_pwm.duty_u16(0)
 
-def green_led():
+def green_led():    # for good posture
     red_pwm.duty_u16(0)
-    green_pwm.duty_u16(20000)
+    green_pwm.duty_u16(30000)
     blue_pwm.duty_u16(0)
 
 def blue_led():     # for bluetooth
@@ -36,15 +36,15 @@ def blue_led():     # for bluetooth
     green_pwm.duty_u16(0)
     blue_pwm.duty_u16(10000)
 
-def orange_led():   # to show device has started
-    red_pwm.duty_u16(34000)
-    green_pwm.duty_u16(35000)
-    blue_pwm.duty_u16(0)
+def blue_green_led():   # to show device has started
+    red_pwm.duty_u16(0)
+    green_pwm.duty_u16(15000)
+    blue_pwm.duty_u16(30000)
 
 def purple_led():   # to show calibration
-    red_pwm.duty_u16(30000)
+    red_pwm.duty_u16(10000)
     green_pwm.duty_u16(0)
-    blue_pwm.duty_u16(35000)
+    blue_pwm.duty_u16(10000)
 
 def led_off():      # turn off led
     red_pwm.duty_u16(0)
@@ -56,36 +56,6 @@ def declare_globals():
     pitch_diff = 0
     yaw_diff = 0
     roll_diff = 0
-
-
-def calc_wrist_angles(hand_ax, hand_ay, hand_az, arm_ax, arm_ay, arm_az, hand_mx, hand_my, hand_mz, arm_mx, arm_my, arm_mz):
-    global filtered_hand_mx, filtered_hand_my, filtered_arm_mx, filtered_arm_my
-    # roll (flexion/extension), yaw (radial)
-    hand_pitch = math.atan2(hand_az, hand_ax) * 180 / math.pi
-    hand_roll = math.atan2(hand_az, hand_ay) * 180 / (math.pi);
-    filtered_hand_mx = low_pass_filter(hand_mx, filtered_hand_mx)
-    filtered_hand_my = low_pass_filter(hand_my, filtered_hand_my)
-    hand_yaw =  90 - math.atan2(filtered_hand_my, filtered_hand_mx) * 180 / math.pi
-    
-    arm_pitch = math.atan2(arm_az, arm_ax) * 180 / math.pi
-    arm_roll = math.atan2(arm_az, arm_ay) * 180 / math.pi
-    arm_yaw = math.atan2(arm_my, arm_mx) * 180 / math.pi
-    filtered_arm_mx = low_pass_filter(arm_mx, filtered_arm_mx)
-    filtered_arm_my = low_pass_filter(arm_my, filtered_arm_my)
-    arm_yaw = 90 - math.atan2(filtered_arm_my, filtered_arm_mx) * 180 / math.pi
-
-    # angles in relation to arm IMU
-    roll_diff = abs(round(arm_roll - hand_roll))
-    pitch_diff = abs(round(arm_pitch - hand_pitch))
-    yaw_diff = abs(round(((arm_yaw - hand_yaw) + 180) % 360 - 180))
-
-    if (roll_diff > 35) or (yaw_diff > 35):
-        red_led()
-    else:
-        green_led()
-
-    return roll_diff, pitch_diff, yaw_diff
-
 
 
 def low_pass_filter(raw_value:float, remembered_value):
