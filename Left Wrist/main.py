@@ -2,7 +2,7 @@ import aioble
 import bluetooth
 import asyncio
 from sys import exit
-from machine import Pin, I2C
+from machine import Pin, I2C, ADC
 import struct
 from helpers import *
 from mpu9250 import MPU9250
@@ -11,8 +11,13 @@ from utime import sleep
 import time
 import ujson as json
 
-orange_led()
-time.sleep(1)
+for x in range(0,11):   # startup led
+    if x%2 == 0:
+        blue_green_led()
+    else:
+        led_off()
+    time.sleep(0.3)
+led_off()
 
 # turn off green LED on Pico
 onboard_LED = Pin("LED", Pin.OUT)
@@ -47,8 +52,8 @@ if c_state == 0:
     ak8963_hand = AK8963(i2c_hand)
     ak8963_arm = AK8963(i2c_arm)
     
-    hand_offset, hand_scale = ak8963_hand.calibrate(count=10)
-    arm_offset, arm_scale = ak8963_arm.calibrate(count=10)
+    hand_offset, hand_scale = ak8963_hand.calibrate(count=256,delay=200)
+    arm_offset, arm_scale = ak8963_arm.calibrate(count=256,delay=200)
     
     jsonData = {"hand_offset_x": hand_offset[0], "hand_offset_y": hand_offset[1], "hand_offset_z": hand_offset[2],
                 "hand_scale_x": hand_scale[0], "hand_scale_y": hand_scale[1], "hand_scale_z": hand_scale[2],
@@ -217,8 +222,11 @@ async def send_data_task(connection, characteristic):
         print(f"writing error {e}")
 
 
+full_battery = 4.2                  # these are our reference voltages for a full/empty battery, in volts
+empty_battery = 2.8                 # the values could vary by battery size/manufacturer so you might need to adjust them
+
 async def run_peripheral_mode():
-    global user_radial_offset, user_flexion_offset, set_offset_flag
+    global user_radial_offset, user_flexion_offset, set_offset_flag, full_battery, empty_battery
     # Set up the Bluetooth service and characteristic
     ble_service = aioble.Service(BLE_SVC_UUID)
     characteristic = aioble.Characteristic(
@@ -249,15 +257,32 @@ async def run_peripheral_mode():
             connection.disconnect()
             print("Disconnected from the central device.")
             print("Sleeping for 4 seconds.\n")
-            machine.lightsleep(4000)
+            
+        # read battery level
+        vsys = ADC(Pin(29))                 # reads the system input voltage
+        charging = Pin(24, Pin.IN)          # reading GP24 tells us whether or not USB power is connected
+        conversion_factor = 3 * 3.3 / 65535
+        voltage = vsys.read_u16() * conversion_factor
+        percentage = 100 * ((voltage - empty_battery) / (full_battery - empty_battery))
+        if percentage > 100:
+            percentage = 100.00
+        if (charging.value != 1) and (percentage <= 10):
+            for x in range(0,11):   # flash red when low battery
+                if x%2 == 0:
+                    red_led()
+                else:
+                    led_off()
+            time.sleep(0.3)
+        led_off()    
+        machine.lightsleep(4000)
 
-        if set_offset_flag == 1:
+        if set_offset_flag == 1:  # break out so offset can be calculated outside of advertise
             break
 
 
 async def main():
     global user_flexion_offset, user_radial_offset, set_offset_flag
-    rgb_led(0, 0, 20000)
+    blue_led()
     while True:
         # create a BLE task to run asynchronously
         #UNCOMMENT BELOW THIS, COMMENTED OUT FOR TESTING

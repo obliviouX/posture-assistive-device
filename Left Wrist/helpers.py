@@ -36,10 +36,10 @@ def blue_led():     # for bluetooth
     green_pwm.duty_u16(0)
     blue_pwm.duty_u16(10000)
 
-def orange_led():   # to show device has started
-    red_pwm.duty_u16(30000)
-    green_pwm.duty_u16(20000)
-    blue_pwm.duty_u16(0)
+def blue_green_led():   # to show device has started
+    red_pwm.duty_u16(0)
+    green_pwm.duty_u16(15000)
+    blue_pwm.duty_u16(30000)
 
 def purple_led():   # to show calibration
     red_pwm.duty_u16(10000)
