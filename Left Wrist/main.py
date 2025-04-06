@@ -223,7 +223,7 @@ async def send_data_task(connection, characteristic):
 
 
 full_battery = 4.2                  # these are our reference voltages for a full/empty battery, in volts
-empty_battery = 2.8                 # the values could vary by battery size/manufacturer so you might need to adjust them
+empty_battery = 3.0                 # the values could vary by battery size/manufacturer so you might need to adjust them
 
 async def run_peripheral_mode():
     global user_radial_offset, user_flexion_offset, set_offset_flag, full_battery, empty_battery
