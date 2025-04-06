@@ -147,11 +147,11 @@ class AK8963:
         minx = maxx = reading[0]
         miny = maxy = reading[1]
         minz = maxz = reading[2]
-
+        half_way = round(count//2)
         while count:
             purple_led()
             if (count % 10) == 0:
-                rgb_led(0,0,0)
+                led_off()
             else:
                 purple_led()
             utime.sleep_ms(delay)
@@ -163,7 +163,13 @@ class AK8963:
             minz = min(minz, reading[2])
             maxz = max(maxz, reading[2])
             count -= 1
-            #print(count)
+            if count == half_way:
+                blue_green_led()
+                utime.sleep_ms(500)
+            if count == 0:
+                green_led()
+                utime.sleep_ms(500)
+            print(count)
 
         # Hard iron correction
         offset_x = (maxx + minx) / 2
