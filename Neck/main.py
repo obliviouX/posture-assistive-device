@@ -13,6 +13,10 @@ import math
 onboard_LED = Pin("LED", Pin.OUT)
 onboard_LED.off()
 
+# pin to turn on haptic motor
+haptic_motor = Pin(21, Pin.OUT)
+haptic_motor.off()
+
 # pin that supplies power to the IMU
 imu_power = Pin(18, Pin.OUT)
 imu_power.on()
@@ -35,17 +39,15 @@ BLE_NAME = f"{IAM}"  					# You can dynamically change this if you want unique n
 BLE_SVC_UUID = bluetooth.UUID(0x181A) 	# Central looks for this uuid
 BLE_CHARACTERISTIC_UUID = bluetooth.UUID(0x2A6E)
 BLE_APPEARANCE = 0x0300
-BLE_ADVERTISING_INTERVAL = 2000
-BLE_SCAN_LENGTH = 5000
-BLE_INTERVAL = 30000
-BLE_WINDOW = 30000
+BLE_ADVERTISING_INTERVAL = 1000
 
 
 def encode_message(message):
     return message.encode('utf-8')
 
-
+neck_roll = 90
 async def get_imu_data():
+    global neck_roll
     neck_ay = round(neck_imu.acceleration[1])
     neck_az = round(neck_imu.acceleration[2])
     neck_roll = math.atan2(neck_az, neck_ay) * 180 / math.pi
@@ -86,7 +88,7 @@ async def send_data_task(connection, characteristic):
 
 
 async def run_peripheral_mode():
-
+    global neck_roll
     # Set up the Bluetooth service and characteristic
     ble_service = aioble.Service(BLE_SVC_UUID)
     characteristic = aioble.Characteristic(
@@ -117,10 +119,12 @@ async def run_peripheral_mode():
             connection.disconnect()
             print("Disconnected from the central device.")
             print("Sleeping for 4 seconds.\n")
-            machine.lightsleep(4000)
-
+            if (neck_roll > 125) or (neck_roll < 55):   # if posture is bad, break from advertising to power motor
+                break
+            
 
 async def main():
+    global neck_roll
     while True:
         # Create a BLE task to run asynchronously
         tasks = [
@@ -128,5 +132,11 @@ async def main():
         ]
         await asyncio.gather(*tasks)
 
+        if (neck_roll > 125) or (neck_roll < 55):
+            haptic_motor.on()
+            time.sleep(0.3)
+            haptic_motor.off()
+
+        machine.lightsleep(4000)
 
 asyncio.run(main())
