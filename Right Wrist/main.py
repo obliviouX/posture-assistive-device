@@ -274,7 +274,6 @@ async def run_peripheral_mode():
                     led_off()
             time.sleep(0.3)
         led_off()    
-        machine.lightsleep(4000)
 
         if set_offset_flag == 1:  # break out so offset can be calculated outside of advertise
             break

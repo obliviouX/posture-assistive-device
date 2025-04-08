@@ -24,7 +24,7 @@ BLE_SVC_UUID = bluetooth.UUID(0x181A)
 BLE_CHARACTERISTIC_UUID = bluetooth.UUID(0x2A6E)
 BLE_APPEARANCE = 0x0300
 BLE_ADVERTISING_INTERVAL = 2000
-BLE_SCAN_LENGTH = 5000
+BLE_SCAN_LENGTH = 1000
 BLE_INTERVAL = 30000
 BLE_WINDOW = 30000
 
@@ -51,7 +51,6 @@ async def receive_data_task(characteristic,connection):
                 #print("Device: ", numbers[0], "Roll: ", numbers[1], "Pitch: ", numbers[2], "Yaw: ", numbers[3], end="\n")
                 print(numbers[0], numbers[1], numbers[3])
                 update_display(numbers[1], numbers[3], numbers[0], devices_conn)  # flexion, radial, device
-                #await asyncio.sleep(0.5)
                 if num_messages_received == 1:
                     connection.disconnect()
                     break
@@ -71,7 +70,7 @@ async def ble_scan(peripheral_name):
 
     print(f"Scanning for BLE Peripheral named {peripheral_name}...")
 
-    async with aioble.scan(3000, interval_us=20000, window_us=20000, active=True) as scanner:
+    async with aioble.scan(1000, interval_us=20000, window_us=20000, active=True) as scanner:
         async for result in scanner:
             if result.name() == peripheral_name and BLE_SVC_UUID in result.services():
                 print(f"found {result.name()} with service uuid {BLE_SVC_UUID}")

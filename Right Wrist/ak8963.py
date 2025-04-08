@@ -169,6 +169,7 @@ class AK8963:
             if count == 0:
                 green_led()
                 utime.sleep_ms(500)
+                led_off()
             print(count)
 
         # Hard iron correction
