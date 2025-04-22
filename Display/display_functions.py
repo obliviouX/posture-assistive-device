@@ -245,7 +245,7 @@ def create_display_layout():
                 display.set_pen(GREEN)
             
             text_width = (display.measure_text(str(lw_fe), 1))//2
-            display.text(str(lw_fe), (WIDTH//2) - text_width, (HEIGHT//4) - 10, 100, 1.5, 0)
+            display.text(str(lw_fe), (WIDTH//2) - text_width, (HEIGHT//4) + 20, 100, 1.5, 0)
             
             if (lw_r == ''):
                 display.set_pen(BLACK)
