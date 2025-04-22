@@ -11,7 +11,7 @@ from utime import sleep
 import time
 import ujson as json
 
-for x in range(0,11):   # startup led
+for x in range(0,8):   # startup led
     if x%2 == 0:
         blue_green_led()
     else:
@@ -71,9 +71,10 @@ if c_state == 0:
                          scale=(hand_scale[0], hand_scale[1], hand_scale[2]))
     ak8963_arm = AK8963(i2c_arm, offset=(arm_offset[0], arm_offset[1], arm_offset[2]),
                         scale=(arm_scale[0], arm_scale[1], arm_scale[2]))
-
+    time.sleep(0.5)
     hand_imu = MPU9250(i2c_hand, ak8963=ak8963_hand)
     arm_imu = MPU9250(i2c_arm, ak8963=ak8963_arm)
+    
 
 else:
     try:
@@ -93,11 +94,11 @@ else:
             arm_scale_x = data["arm_scale_x"]
             arm_scale_y = data["arm_scale_y"]
             arm_scale_z = data["arm_scale_z"]
-        
+            
             print("OPENED SAVEDATA")
             hand_dummy = MPU9250(i2c_hand)  # dummy to open up access to the ak8963
             arm_dummy = MPU9250(i2c_arm)
-        
+
             print("DUMMY IMUs CREATED")
             ak8963_hand = AK8963(i2c_hand, offset=(hand_offset_x, hand_offset_y, hand_offset_z), scale=(hand_scale_x, hand_scale_y, hand_scale_z))
             ak8963_arm = AK8963(i2c_arm, offset=(arm_offset_x, arm_offset_y, arm_offset_z), scale=(arm_scale_x, arm_scale_y, arm_scale_z))
@@ -107,10 +108,11 @@ else:
             arm_imu = MPU9250(i2c_arm, ak8963=ak8963_arm)
             print("IMUs ARE SET UP")
         
-    except:
-        print("ERROR IN SAVEDATA")
-        red_led()
-
+    except Exception as e:
+        print(f"Error in savedata: {e}")
+        rgb_led(40000,40000,40000)
+        time.sleep(1)
+        
 
 user_radial_offset = 0
 user_flexion_offset = 0
@@ -175,7 +177,7 @@ _CHARACTERISTIC_UUID = bluetooth.UUID(0x2A6E)
 
 # IAM = "Central" # Change to 'Peripheral' or 'Central'
 #IAM = "Left_Wrist"
-IAM = "Right_Wrist"
+IAM = "Left_Wrist"
 IAM_SENDING_TO = "Central"
 
 # Bluetooth parameters
@@ -183,7 +185,7 @@ BLE_NAME = f"{IAM}"  # You can dynamically change this if you want unique names
 BLE_SVC_UUID = bluetooth.UUID(0x181A) # central peripheral looks for this uuid
 BLE_CHARACTERISTIC_UUID = bluetooth.UUID(0x2A6E)
 BLE_APPEARANCE = 0x0300
-BLE_ADVERTISING_INTERVAL = 1000
+BLE_ADVERTISING_INTERVAL = 500
 
 
 def encode_message(message):
@@ -195,7 +197,7 @@ async def get_imu_data():
     roll_diff, pitch_diff, yaw_diff = calc_wrist_angles()
     
     # Data structure: message = f"device,roll,pitch,yaw"
-    message = f"2,{roll_diff},{pitch_diff},{yaw_diff}"
+    message = f"1,{roll_diff},{pitch_diff},{yaw_diff}"
 
     return message
 
@@ -274,6 +276,7 @@ async def run_peripheral_mode():
                     led_off()
             time.sleep(0.3)
         led_off()    
+        #await asyncio.sleep(1)
 
         if set_offset_flag == 1:  # break out so offset can be calculated outside of advertise
             break
@@ -294,4 +297,3 @@ async def main():
             set_offset_flag = 0
 
 asyncio.run(main())
-

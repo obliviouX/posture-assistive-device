@@ -48,9 +48,9 @@ button_y.irq(trigger=button_y.IRQ_RISING, handler=callback_y)
 BLACK = display.create_pen(0, 0, 0)
 WHITE = display.create_pen(255,255,255)
 RED = display.create_pen(255,0,0)
-DARK_RED = display.create_pen(50,0,0)
+DARK_RED = display.create_pen(150,0,0)
 GREEN = display.create_pen(0,255,0)
-DARK_GREEN = display.create_pen(0,50,0)
+DARK_GREEN = display.create_pen(0,100,0)
 BLUE = display.create_pen(0,0,255)
 LIGHT_BLUE = display.create_pen(0,100,220)
 ULTRA_LIGHT_BLUE = display.create_pen(0,250,250)
@@ -245,7 +245,7 @@ def create_display_layout():
                 display.set_pen(GREEN)
             
             text_width = (display.measure_text(str(lw_fe), 1))//2
-            display.text(str(lw_fe), (WIDTH//2) - text_width, ((HEIGHT//4) * 3) - 10, 100, 1.5, 0)
+            display.text(str(lw_fe), (WIDTH//2) - text_width, (HEIGHT//4) - 10, 100, 1.5, 0)
             
             if (lw_r == ''):
                 display.set_pen(BLACK)
